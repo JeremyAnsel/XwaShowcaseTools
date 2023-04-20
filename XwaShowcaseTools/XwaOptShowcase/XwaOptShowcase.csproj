@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <HLSLShader Include="SceneGSShadow.hlsl">
+      <ShaderProfile>gs_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="ScenePSAmbient.hlsl">
+      <ShaderProfile>ps_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="ScenePSDepth.hlsl">
+      <ShaderProfile>ps_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="ScenePSMain.hlsl">
+      <ShaderProfile>ps_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="ScenePSShadow.hlsl">
+      <ShaderProfile>ps_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="SceneVSMain.hlsl">
+      <ShaderProfile>vs_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="SceneVSShadow.hlsl">
+      <ShaderProfile>vs_4_0</ShaderProfile>
+    </HLSLShader>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JeremyAnsel.DirectX.DXMath" Version="3.0.30" />
+    <PackageReference Include="JeremyAnsel.DirectX.GameWindow" Version="3.0.47" />
+    <PackageReference Include="JeremyAnsel.DirectX.SdkCamera" Version="2.0.10" />
+    <PackageReference Include="JeremyAnsel.HLSL.Targets" Version="2.0.18" />
+    <PackageReference Include="JeremyAnsel.IO.Locator" Version="3.0.38" />
+    <PackageReference Include="JeremyAnsel.Xwa.HooksConfig" Version="1.0.2" />
+    <PackageReference Include="JeremyAnsel.Xwa.Opt" Version="3.0.45" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VideoLib\VideoLib.csproj" />
+  </ItemGroup>
+
+</Project>
