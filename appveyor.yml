@@ -1,0 +1,29 @@
+image: Visual Studio 2022
+version: 1.0.{build}
+configuration: Release
+
+init:
+- if "%APPVEYOR_REPO_NAME%" == "JeremyAnsel/XwaShowcaseTools" if "%APPVEYOR_REPO_BRANCH%"=="main" if not defined APPVEYOR_PULL_REQUEST_NUMBER set DEPLOY=True
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+
+nuget:
+  disable_publish_on_pr: true
+
+before_build:
+- nuget restore XwaShowcaseTools\XwaShowcaseTools.sln
+
+build:
+  project: XwaShowcaseTools\XwaShowcaseTools.sln
+  verbosity: minimal
+
+after_build:
+- XwaShowcaseTools\build-dist.cmd
+
+artifacts:
+- path: XwaShowcaseTools\dist
+  name: XwaShowcaseTools-$(APPVEYOR_BUILD_VERSION)
+  type: zip
