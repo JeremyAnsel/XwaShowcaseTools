@@ -192,10 +192,21 @@ namespace XwaOptShowcase
                         break;
 
                     case VirtualKey.O:
-                        this.OptFileName = FileDialogHelpers.GetOpenFile();
-                        this.camera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
-                        this.lightCamera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
-                        break;
+                        {
+                            bool isFullscreen = this.DeviceResources.SwapChain.GetFullscreenState();
+                            this.DeviceResources.SwapChain.SetFullscreenState(false);
+
+                            this.OptFileName = FileDialogHelpers.GetOpenFile();
+                            this.camera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
+                            this.lightCamera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
+
+                            if (isFullscreen)
+                            {
+                                this.DeviceResources.SwapChain.SetFullscreenState(true);
+                            }
+
+                            break;
+                        }
 
                     case VirtualKey.Space:
                         this.mainGameComponent.IsPaused = !this.mainGameComponent.IsPaused;
