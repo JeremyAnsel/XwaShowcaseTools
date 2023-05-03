@@ -6,7 +6,35 @@ namespace XwaOptShowcase
 {
     static class FileDialogHelpers
     {
-        public static string GetOpenFile()
+        public static string GetOpenImageFile()
+        {
+            string fileName = null;
+
+            Thread thread = new Thread(() =>
+            {
+                var dialog = new OpenFileDialog
+                {
+                    DefaultExt = ".png",
+                    CheckFileExists = true,
+                    Filter = "Images (*.png, *.bmp, *.jpg)|*.png;*.bmp;*.jpg|PNG files (*.png)|*.png|BMP files (*.bmp)|*.bmp|JPG files (*.jpg)|*.jpg"
+                };
+
+                if (dialog.ShowDialog() != true)
+                {
+                    fileName = null;
+                }
+
+                fileName = dialog.FileName;
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
+
+            return fileName;
+        }
+
+        public static string GetOpenOptFile()
         {
             string fileName = null;
 
@@ -34,7 +62,7 @@ namespace XwaOptShowcase
             return fileName;
         }
 
-        public static string GetSaveAsFile(string fileName)
+        public static string GetSaveAsMp4File(string fileName)
         {
             fileName = Path.GetFullPath(fileName);
 

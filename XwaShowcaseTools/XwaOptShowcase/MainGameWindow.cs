@@ -34,6 +34,28 @@ namespace XwaOptShowcase
             this.ExitOnEscapeKey = false;
         }
 
+        private bool backgroundBitmapFileNameChanged;
+        private string backgroundBitmapFileName;
+
+        public string BackgroundBitmapFileName
+        {
+            get
+            {
+                return this.backgroundBitmapFileName;
+            }
+
+            set
+            {
+                if (value == this.backgroundBitmapFileName)
+                {
+                    return;
+                }
+
+                this.backgroundBitmapFileName = value;
+                this.backgroundBitmapFileNameChanged = true;
+            }
+        }
+
         private bool optFileNameChanged;
         private string optFileName;
 
@@ -67,7 +89,7 @@ namespace XwaOptShowcase
             this.camera = new SdkModelViewerCamera();
             this.lightCamera = new SdkModelViewerCamera();
 
-            this.OptFileName = FileDialogHelpers.GetOpenFile();
+            this.OptFileName = FileDialogHelpers.GetOpenOptFile();
 
             base.Init();
         }
@@ -121,6 +143,13 @@ namespace XwaOptShowcase
 
             this.camera.FrameMove(this.Timer.ElapsedSeconds);
             this.lightCamera.FrameMove(this.Timer.ElapsedSeconds);
+
+            if (this.backgroundBitmapFileNameChanged)
+            {
+                this.backgroundBitmapFileNameChanged = false;
+                this.mainGameComponent.BackgroundBitmapFileName = this.BackgroundBitmapFileName;
+                this.mainGameComponent.ReloadBackground();
+            }
 
             if (this.optFileNameChanged)
             {
@@ -191,12 +220,27 @@ namespace XwaOptShowcase
                         this.Exit();
                         break;
 
+                    case VirtualKey.B:
+                        {
+                            bool isFullscreen = this.DeviceResources.SwapChain.GetFullscreenState();
+                            this.DeviceResources.SwapChain.SetFullscreenState(false);
+
+                            this.BackgroundBitmapFileName = FileDialogHelpers.GetOpenImageFile();
+
+                            if (isFullscreen)
+                            {
+                                this.DeviceResources.SwapChain.SetFullscreenState(true);
+                            }
+
+                            break;
+                        }
+
                     case VirtualKey.O:
                         {
                             bool isFullscreen = this.DeviceResources.SwapChain.GetFullscreenState();
                             this.DeviceResources.SwapChain.SetFullscreenState(false);
 
-                            this.OptFileName = FileDialogHelpers.GetOpenFile();
+                            this.OptFileName = FileDialogHelpers.GetOpenOptFile();
                             this.camera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
                             this.lightCamera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
 
@@ -266,6 +310,7 @@ namespace XwaOptShowcase
             var device = new RenderTargetDeviceResources((uint)width, (uint)height);
             var component = new MainGameComponent()
             {
+                BackgroundBitmapFileName = BackgroundBitmapFileName,
                 OptFileName = OptFileName
             };
 
@@ -297,6 +342,7 @@ namespace XwaOptShowcase
 
                     var component = new MainGameComponent()
                     {
+                        BackgroundBitmapFileName = BackgroundBitmapFileName,
                         OptFileName = OptFileName
                     };
 

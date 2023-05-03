@@ -2,6 +2,7 @@
 XwaOptShowcase runs on Windows 32/64 bits with the .NET framework 6.0.
 
 When the tool starts you will be asked to select an OPT file.
+To open a background image, press B.
 To open another OPT, press O.
 To generate a video, press the Return key. The video is saved in the "Screenshots" folder.
 To stop the animation, press the Spacebar.
