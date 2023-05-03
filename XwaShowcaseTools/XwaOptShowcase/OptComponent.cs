@@ -110,13 +110,13 @@ namespace XwaOptShowcase
             this.CreateTextures2(opt);
             this.CreateMeshes(opt);
 
-            this.shaderVSMain = device.CreateVertexShader(File.ReadAllBytes("SceneVSMain.cso"), null);
-            this.shaderPSMain = device.CreatePixelShader(File.ReadAllBytes("ScenePSMain.cso"), null);
-            this.shaderPSAmbient = device.CreatePixelShader(File.ReadAllBytes("ScenePSAmbient.cso"), null);
-            this.shaderPSDepth = device.CreatePixelShader(File.ReadAllBytes("ScenePSDepth.cso"), null);
-            this.shaderVSShadow = device.CreateVertexShader(File.ReadAllBytes("SceneVSShadow.cso"), null);
-            this.shaderGSShadow = device.CreateGeometryShader(File.ReadAllBytes("SceneGSShadow.cso"), null);
-            this.shaderPSShadow = device.CreatePixelShader(File.ReadAllBytes("ScenePSShadow.cso"), null);
+            this.shaderVSMain = device.CreateVertexShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\SceneVSMain.cso"), null);
+            this.shaderPSMain = device.CreatePixelShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\ScenePSMain.cso"), null);
+            this.shaderPSAmbient = device.CreatePixelShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\ScenePSAmbient.cso"), null);
+            this.shaderPSDepth = device.CreatePixelShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\ScenePSDepth.cso"), null);
+            this.shaderVSShadow = device.CreateVertexShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\SceneVSShadow.cso"), null);
+            this.shaderGSShadow = device.CreateGeometryShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\SceneGSShadow.cso"), null);
+            this.shaderPSShadow = device.CreatePixelShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\ScenePSShadow.cso"), null);
 
             D3D11InputElementDesc[] basicVertexLayoutDesc = new[]
             {
@@ -125,7 +125,7 @@ namespace XwaOptShowcase
                 new D3D11InputElementDesc("TEXCOORD", 0, DxgiFormat.R32G32Float, 0, 24, D3D11InputClassification.PerVertexData, 0)
             };
 
-            this.inputLayout = device.CreateInputLayout(basicVertexLayoutDesc, File.ReadAllBytes("SceneVSMain.cso"));
+            this.inputLayout = device.CreateInputLayout(basicVertexLayoutDesc, File.ReadAllBytes("XwaOptShowcase_Shaders\\SceneVSMain.cso"));
 
             this.constantBuffer = device.CreateBuffer(new D3D11BufferDesc(D3dConstantBufferData.Size, D3D11BindOptions.ConstantBuffer));
 

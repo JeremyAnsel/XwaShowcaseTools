@@ -13,25 +13,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <HLSLShader Include="SceneGSShadow.hlsl">
+    <HLSLShader Include="XwaOptShowcase_Shaders\SceneGSShadow.hlsl">
       <ShaderProfile>gs_4_0</ShaderProfile>
     </HLSLShader>
-    <HLSLShader Include="ScenePSAmbient.hlsl">
+    <HLSLShader Include="XwaOptShowcase_Shaders\ScenePSAmbient.hlsl">
       <ShaderProfile>ps_4_0</ShaderProfile>
     </HLSLShader>
-    <HLSLShader Include="ScenePSDepth.hlsl">
+    <HLSLShader Include="XwaOptShowcase_Shaders\ScenePSDepth.hlsl">
       <ShaderProfile>ps_4_0</ShaderProfile>
     </HLSLShader>
-    <HLSLShader Include="ScenePSMain.hlsl">
+    <HLSLShader Include="XwaOptShowcase_Shaders\ScenePSMain.hlsl">
       <ShaderProfile>ps_4_0</ShaderProfile>
     </HLSLShader>
-    <HLSLShader Include="ScenePSShadow.hlsl">
+    <HLSLShader Include="XwaOptShowcase_Shaders\ScenePSShadow.hlsl">
       <ShaderProfile>ps_4_0</ShaderProfile>
     </HLSLShader>
-    <HLSLShader Include="SceneVSMain.hlsl">
+    <HLSLShader Include="XwaOptShowcase_Shaders\SceneVSMain.hlsl">
       <ShaderProfile>vs_4_0</ShaderProfile>
     </HLSLShader>
-    <HLSLShader Include="SceneVSShadow.hlsl">
+    <HLSLShader Include="XwaOptShowcase_Shaders\SceneVSShadow.hlsl">
       <ShaderProfile>vs_4_0</ShaderProfile>
     </HLSLShader>
   </ItemGroup>
