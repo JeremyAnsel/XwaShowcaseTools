@@ -693,14 +693,14 @@ namespace XwaOptShowcase
                     1,
                     this.DisableCullingRasterizerState);
 
-                //this.RenderSceneTransparent(
-                //    this.shaderVSShadow,
-                //    this.shaderGSShadow,
-                //    this.shaderPSShadow,
-                //    this.DisableFrameBufferBlendState,
-                //    this.TwoSidedStencilDepthStencilState,
-                //    1,
-                //    this.DisableCullingRasterizerState);
+                this.RenderSceneTransparent(
+                    this.shaderVSShadow,
+                    this.shaderGSShadow,
+                    this.shaderPSShadow,
+                    this.DisableFrameBufferBlendState,
+                    this.TwoSidedStencilDepthStencilState,
+                    1,
+                    this.DisableCullingRasterizerState);
             }
 
             // Render the lit scene

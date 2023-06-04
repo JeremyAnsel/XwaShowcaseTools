@@ -26,6 +26,13 @@ float4 main(PSSceneIn input) : SV_TARGET
         color = float4(texelColorIllum.xyz, 1.0f);
 
     }
+    else if (texelColor.w <= 0.8f)
+    {
+        float colorAttenuation = max(0, dot(lightDirection.xyz, input.norm));
+        float3 colorAmbient = texelColor.xyz * g_ambientFactor;
+        float3 colorDiffuse = texelColor.xyz * colorAttenuation * g_diffuseFactor;
+        color = float4(colorAmbient + colorDiffuse, texelColor.w);
+    }
     else
     {
         color = float4(texelColor.xyz * g_shadowFactor, texelColor.w);
