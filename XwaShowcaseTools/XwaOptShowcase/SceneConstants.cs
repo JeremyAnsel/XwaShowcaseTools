@@ -13,12 +13,5 @@ namespace XwaOptShowcase
         public static readonly XMFloat3 VecAt = new(0.0f, 0.0f, 0.0f);
 
         public static readonly XMFloat3 VecUp = new(0.0f, 1.0f, 0.0f);
-
-        //public const string OptFilename = @"C:\xwa\xwa_en_xwau\FLIGHTMODELS\XWINGEXTERIOR.OPT";
-        //public const string OptFilename = @"C:\xwa\xwa_en_xwau\FLIGHTMODELS\MillenniumFalcon2Exterior.OPT";
-        //public const string OptFilename = @"C:\xwa\xwa_en_xwau\FLIGHTMODELS\Corvette2Standard.OPT";
-        //public const string OptFilename = @"C:\xwa\xwa_en_xwau\FLIGHTMODELS\superstardestroyer.OPT";
-        //public const string OptFilename = @"C:\xwa\xwa_en_xwau\FLIGHTMODELS\imperialstardestroyer.OPT";
-        public const string OptFilename = @"C:\xwa\xwa_en_vanilla\FLIGHTMODELS\ImperialStarDestroyer.opt";
     }
 }
