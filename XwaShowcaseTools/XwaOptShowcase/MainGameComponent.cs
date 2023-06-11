@@ -7,6 +7,7 @@ using System.Drawing;
 using System;
 using System.IO;
 using JeremyAnsel.DirectX.Dxgi;
+using System.Collections.Generic;
 
 namespace XwaOptShowcase
 {
@@ -31,6 +32,10 @@ namespace XwaOptShowcase
         public string BackgroundBitmapFileName { get; set; }
 
         public string OptFileName { get; set; }
+
+        public string OptObjectProfile { get; set; }
+
+        public List<string> OptObjectSkins { get; } = new();
 
         public XMMatrix LightTransform { get; set; }
 
@@ -133,7 +138,7 @@ namespace XwaOptShowcase
 
             if (File.Exists(OptFileName))
             {
-                this.optComponent = new OptComponent(OptFileName);
+                this.optComponent = new OptComponent(OptFileName, OptObjectProfile, OptObjectSkins);
                 this.optComponent.CreateDeviceDependentResources(this.deviceResources);
                 this.optComponent.CreateWindowSizeDependentResources();
                 this.IsPaused = false;
@@ -146,7 +151,7 @@ namespace XwaOptShowcase
 
             if (File.Exists(OptFileName))
             {
-                this.optComponent = new OptComponent(OptFileName);
+                this.optComponent = new OptComponent(OptFileName, OptObjectProfile, OptObjectSkins);
                 this.optComponent.CreateDeviceDependentResources(this.deviceResources);
             }
         }

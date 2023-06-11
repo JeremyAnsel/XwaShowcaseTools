@@ -42,6 +42,7 @@
     <PackageReference Include="JeremyAnsel.DirectX.SdkCamera" Version="2.0.11" />
     <PackageReference Include="JeremyAnsel.HLSL.Targets" Version="2.0.19" />
     <PackageReference Include="JeremyAnsel.IO.Locator" Version="3.0.38" />
+    <PackageReference Include="JeremyAnsel.Xwa.Dat" Version="3.0.11" />
     <PackageReference Include="JeremyAnsel.Xwa.HooksConfig" Version="1.0.2" />
     <PackageReference Include="JeremyAnsel.Xwa.Opt" Version="3.0.45" />
   </ItemGroup>

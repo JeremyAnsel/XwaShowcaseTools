@@ -23,7 +23,8 @@ struct PSSceneIn
     float4 pos : SV_POSITION;
     float3 norm : NORMAL;
     float2 tex : TEXCOORD0;
-    float4 posWorld : POSITION;
+    float4 posWorld : POSITION0;
+    float4 posView : POSITION1;
 };
 
 struct GSShadowIn

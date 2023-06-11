@@ -2,6 +2,7 @@
 
 Texture2D g_texture : register(t0);
 Texture2D g_texture2 : register(t1);
+Texture2D g_textureNormalMap : register(t2);
 SamplerState g_sampler : register(s0);
 
 float4 main(PSSceneIn input) : SV_TARGET
@@ -18,17 +19,19 @@ float4 main(PSSceneIn input) : SV_TARGET
     
     float4 texelColor = g_texture.Sample(g_sampler, input.tex);
     float4 texelColorIllum = g_texture2.Sample(g_sampler, input.tex);
+    float4 texelNormal = g_textureNormalMap.Sample(g_sampler, input.tex);
 
     float4 color;
 
     if (texelColorIllum.w >= 0.2f)
     {
         color = float4(texelColorIllum.xyz, 1.0f);
-
     }
     else if (texelColor.w <= 0.8f)
     {
-        float colorAttenuation = max(0, dot(lightDirection.xyz, input.norm));
+        float3 lightDir = normalize(lightDirection.xyz);
+        float3 normal = normalize(input.norm);
+        float colorAttenuation = max(0, dot(lightDir, normal));
         float3 colorAmbient = texelColor.xyz * g_ambientFactor;
         float3 colorDiffuse = texelColor.xyz * colorAttenuation * g_diffuseFactor;
         color = float4(colorAmbient + colorDiffuse, texelColor.w);

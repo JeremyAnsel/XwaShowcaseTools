@@ -17,6 +17,8 @@ PSSceneIn main(VSSceneIn input)
     float4 posWorld = float4(input.pos, 1.0f);
     posWorld = mul(posWorld, world);
     output.posWorld = posWorld;
-    
+
+    output.posView = mul(posWorld, view);
+
     return output;
 }

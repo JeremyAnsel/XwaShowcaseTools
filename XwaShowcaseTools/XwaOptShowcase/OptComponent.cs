@@ -2,7 +2,10 @@
 using JeremyAnsel.DirectX.Dxgi;
 using JeremyAnsel.DirectX.DXMath;
 using JeremyAnsel.DirectX.GameWindow;
+using JeremyAnsel.Xwa.Dat;
+using JeremyAnsel.Xwa.HooksConfig;
 using JeremyAnsel.Xwa.Opt;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +20,7 @@ namespace XwaOptShowcase
 
         private readonly Dictionary<string, D3D11ShaderResourceView> textureViews = new();
         private readonly Dictionary<string, D3D11ShaderResourceView> textureViews2 = new();
+        private readonly Dictionary<string, D3D11ShaderResourceView> textureViewsNormalMaps = new();
 
         private readonly List<D3dMesh> meshes = new();
 
@@ -48,14 +52,20 @@ namespace XwaOptShowcase
         private D3D11BlendState AdditiveBlendingBlendState;
         private D3D11BlendState SrcAlphaBlendingBlendState;
 
-        public OptComponent(string optFilename)
+        public OptComponent(string optFilename, string optObjectProfile, List<string> optObjectSkins)
         {
             this.OptFilename = optFilename;
+            this.OptObjectProfile = optObjectProfile ?? "Default";
+            this.OptObjectSkins.AddRange(optObjectSkins ?? new());
         }
 
         public D3D11FeatureLevel MinimalFeatureLevel => D3D11FeatureLevel.FeatureLevel100;
 
         public string OptFilename { get; private set; }
+
+        public string OptObjectProfile { get; private set; }
+
+        public List<string> OptObjectSkins { get; } = new();
 
         public float OptSize { get; private set; }
 
@@ -87,7 +97,13 @@ namespace XwaOptShowcase
 
             var objectProfiles = OptModel.GetObjectProfiles(opt.FileName);
             //var objectSkins = OptModel.GetSkins(opt.FileName);
-            opt = OptModel.GetTransformedOpt(opt, 0, objectProfiles["Default"], new List<string>());
+
+            if (!objectProfiles.TryGetValue(this.OptObjectProfile, out List<int> objectProfile))
+            {
+                objectProfile = objectProfiles["Default"];
+            }
+
+            opt = OptModel.GetTransformedOpt(opt, 0, objectProfile, this.OptObjectSkins);
 
             opt.Scale(XMVector3.Length(SceneConstants.VecEye).X * 1.2f / (opt.Size * OptFile.ScaleFactor));
 
@@ -108,6 +124,7 @@ namespace XwaOptShowcase
 
             this.CreateTextures(opt);
             this.CreateTextures2(opt);
+            this.CreateTexturesNormalMaps(opt);
             this.CreateMeshes(opt);
 
             this.shaderVSMain = device.CreateVertexShader(File.ReadAllBytes("XwaOptShowcase_Shaders\\SceneVSMain.cso"), null);
@@ -377,6 +394,76 @@ namespace XwaOptShowcase
             }
         }
 
+        private void CreateTexturesNormalMaps(OptFile opt)
+        {
+            var device = this.deviceResources.D3DDevice;
+            string optName = Path.GetFileNameWithoutExtension(opt.FileName);
+            string optDirectory = Path.GetDirectoryName(opt.FileName);
+            string rootDirectory = Path.GetFullPath(Path.Combine(optDirectory, ".."));
+
+            string materialsDirectory = Path.GetFullPath(Path.Combine(optDirectory, "..", "Materials"));
+            string materialFilename = Path.Combine(materialsDirectory, optName + ".mat");
+
+            if (!File.Exists(materialFilename))
+            {
+                return;
+            }
+
+            foreach (var textureKey in opt.Textures)
+            {
+                var optTextureName = textureKey.Key;
+
+                IList<string> materialLines = XwaHooksConfig.GetFileLines(materialFilename, optTextureName);
+                string normalMapEntry = XwaHooksConfig.GetFileKeyValue(materialLines, "NormalMap");
+                string[] normalMapEntryParts = normalMapEntry.Split('-');
+
+                if (normalMapEntryParts.Length != 3)
+                {
+                    continue;
+                }
+
+                string normalMapDatFilename = Path.Combine(rootDirectory, normalMapEntryParts[0]);
+
+                if (!File.Exists(normalMapDatFilename))
+                {
+                    continue;
+                }
+
+                if (!int.TryParse(normalMapEntryParts[1], out int normalMapDatGroupId) || !int.TryParse(normalMapEntryParts[2], out int normalMapDatImageId))
+                {
+                    continue;
+                }
+
+                DatFile normalMapDat = DatFile.FromFile(normalMapDatFilename);
+                DatGroup normalMapDatGroup = normalMapDat.Groups.FirstOrDefault(t => t.GroupId == normalMapDatGroupId);
+
+                if (normalMapDatGroup is null)
+                {
+                    continue;
+                }
+
+                DatImage normalMapDatImage = normalMapDatGroup.Images.FirstOrDefault(t => t.GroupId == normalMapDatGroupId && t.ImageId == normalMapDatImageId);
+
+                if (normalMapDatImage is null)
+                {
+                    continue;
+                }
+
+                D3D11SubResourceData[] textureSubResData = new D3D11SubResourceData[1];
+                byte[] imageData = normalMapDatImage.GetImageData();
+                textureSubResData[0] = new D3D11SubResourceData(imageData, (uint)normalMapDatImage.Width * 4);
+                D3D11Texture2DDesc textureDesc = new(DxgiFormat.B8G8R8A8UNorm, (uint)normalMapDatImage.Width, (uint)normalMapDatImage.Height, 1, (uint)textureSubResData.Length);
+
+                using (var texture = device.CreateTexture2D(textureDesc, textureSubResData))
+                {
+                    D3D11ShaderResourceViewDesc textureViewDesc = new(D3D11SrvDimension.Texture2D, textureDesc.Format, 0, textureDesc.MipLevels);
+                    D3D11ShaderResourceView textureView = device.CreateShaderResourceView(texture, textureViewDesc);
+
+                    this.textureViewsNormalMaps.Add(optTextureName, textureView);
+                }
+            }
+        }
+
         private void CreateMeshes(OptFile opt)
         {
             var device = this.deviceResources.D3DDevice;
@@ -488,6 +575,13 @@ namespace XwaOptShowcase
             }
 
             this.textureViews2.Clear();
+
+            foreach (var textureKey in this.textureViewsNormalMaps)
+            {
+                textureKey.Value.Dispose();
+            }
+
+            this.textureViewsNormalMaps.Clear();
 
             foreach (var mesh in this.meshes)
             {
@@ -778,8 +872,9 @@ namespace XwaOptShowcase
 
                 this.textureViews.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture);
                 this.textureViews2.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture2);
+                this.textureViewsNormalMaps.TryGetValue(mesh.Texture, out D3D11ShaderResourceView textureNormapMap);
 
-                context.PixelShaderSetShaderResources(0, new[] { texture, texture2 });
+                context.PixelShaderSetShaderResources(0, new[] { texture, texture2, textureNormapMap });
 
                 context.DrawIndexed(mesh.IndicesCount, 0, 0);
             }
@@ -822,8 +917,9 @@ namespace XwaOptShowcase
 
                 this.textureViews.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture);
                 this.textureViews2.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture2);
+                this.textureViewsNormalMaps.TryGetValue(mesh.Texture, out D3D11ShaderResourceView textureNormapMap);
 
-                context.PixelShaderSetShaderResources(0, new[] { texture, texture2 });
+                context.PixelShaderSetShaderResources(0, new[] { texture, texture2, textureNormapMap });
 
                 context.DrawIndexed(mesh.IndicesCount, 0, 0);
             }

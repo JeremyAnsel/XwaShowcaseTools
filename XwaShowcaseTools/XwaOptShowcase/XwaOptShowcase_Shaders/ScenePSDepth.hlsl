@@ -2,6 +2,7 @@
 
 Texture2D g_texture : register(t0);
 Texture2D g_texture2 : register(t1);
+Texture2D g_textureNormalMap : register(t2);
 SamplerState g_sampler : register(s0);
 
 float4 main(PSSceneIn input) : SV_TARGET
