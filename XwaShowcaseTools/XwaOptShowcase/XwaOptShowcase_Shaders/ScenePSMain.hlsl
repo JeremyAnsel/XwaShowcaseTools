@@ -77,7 +77,7 @@ float4 main(PSSceneIn input) : SV_TARGET
         float3 N = normalize(float3(input.norm.x, input.norm.y, input.norm.z));
         // Normal mapping uses the eye vector, which is defined in viewspace coords.
         // To make the coord sys consistent, we need to compute everything in viewspace coords too.
-        N = mul(N, V);
+        N = normalize(mul(N, V));
         const float3 L = normalize(mul(lightDirection.xyz, V));
 
         // Apply normal mapping
