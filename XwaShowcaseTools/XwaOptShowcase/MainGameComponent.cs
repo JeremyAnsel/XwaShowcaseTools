@@ -33,6 +33,8 @@ namespace XwaOptShowcase
 
         public string OptFileName { get; set; }
 
+        public int OptVersion { get; set; }
+
         public string OptObjectProfile { get; set; }
 
         public List<string> OptObjectSkins { get; } = new();
@@ -138,7 +140,7 @@ namespace XwaOptShowcase
 
             if (File.Exists(OptFileName))
             {
-                this.optComponent = new OptComponent(OptFileName, OptObjectProfile, OptObjectSkins);
+                this.optComponent = new OptComponent(OptFileName, OptVersion, OptObjectProfile, OptObjectSkins);
                 this.optComponent.CreateDeviceDependentResources(this.deviceResources);
                 this.optComponent.CreateWindowSizeDependentResources();
                 this.IsPaused = false;
@@ -151,7 +153,7 @@ namespace XwaOptShowcase
 
             if (File.Exists(OptFileName))
             {
-                this.optComponent = new OptComponent(OptFileName, OptObjectProfile, OptObjectSkins);
+                this.optComponent = new OptComponent(OptFileName, OptVersion, OptObjectProfile, OptObjectSkins);
                 this.optComponent.CreateDeviceDependentResources(this.deviceResources);
             }
         }

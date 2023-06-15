@@ -4,8 +4,10 @@ using JeremyAnsel.DirectX.SdkCamera;
 using JeremyAnsel.DirectX.Window;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using VideoLib;
 
@@ -68,20 +70,25 @@ namespace XwaOptShowcase
 
             set
             {
-                if (value == this.optFileName)
-                {
-                    return;
-                }
-
                 this.optFileName = value;
                 this.optFileNameChanged = true;
             }
         }
 
+        public int OptVersion { get; set; }
+
+        public string OptObjectProfile { get; set; }
+
+        public List<string> OptObjectSkins { get; } = new();
+
         protected override void Init()
         {
             this.mainGameComponent = this.CheckMinimalFeatureLevel(new MainGameComponent());
-            this.mainGameComponent.OptFileName = OptFileName;
+            this.mainGameComponent.OptFileName = this.OptFileName;
+            this.mainGameComponent.OptVersion = this.OptVersion;
+            this.mainGameComponent.OptObjectProfile = this.OptObjectProfile;
+            this.mainGameComponent.OptObjectSkins.Clear();
+            this.mainGameComponent.OptObjectSkins.AddRange(this.OptObjectSkins);
 
             this.cameraFov = DefaultCameraFov;
             this.cameraScale = DefaultCameraScale;
@@ -89,7 +96,7 @@ namespace XwaOptShowcase
             this.camera = new SdkModelViewerCamera();
             this.lightCamera = new SdkModelViewerCamera();
 
-            this.OptFileName = FileDialogHelpers.GetOpenOptFile();
+            this.SelectOptFileName();
 
             base.Init();
         }
@@ -155,6 +162,10 @@ namespace XwaOptShowcase
             {
                 this.optFileNameChanged = false;
                 this.mainGameComponent.OptFileName = this.OptFileName;
+                this.mainGameComponent.OptVersion = this.OptVersion;
+                this.mainGameComponent.OptObjectProfile = this.OptObjectProfile;
+                this.mainGameComponent.OptObjectSkins.Clear();
+                this.mainGameComponent.OptObjectSkins.AddRange(this.OptObjectSkins);
                 this.mainGameComponent.ReloadOpt();
             }
         }
@@ -240,7 +251,8 @@ namespace XwaOptShowcase
                             bool isFullscreen = this.DeviceResources.SwapChain.GetFullscreenState();
                             this.DeviceResources.SwapChain.SetFullscreenState(false);
 
-                            this.OptFileName = FileDialogHelpers.GetOpenOptFile();
+                            this.SelectOptFileName();
+
                             this.camera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
                             this.lightCamera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
 
@@ -268,6 +280,37 @@ namespace XwaOptShowcase
                         break;
                 }
             }
+        }
+
+        private void SelectOptFileName()
+        {
+            this.OptFileName = FileDialogHelpers.GetOpenOptFile();
+            this.OptVersion = 0;
+            this.OptObjectProfile = null;
+            this.OptObjectSkins.Clear();
+
+            if (!File.Exists(this.OptFileName))
+            {
+                return;
+            }
+
+            Thread thread = new Thread(() =>
+            {
+                var dialog = new OptProfileSelectorDialog(this.OptFileName);
+
+                if (dialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                this.OptVersion = dialog.SelectedVersion;
+                this.OptObjectProfile = dialog.SelectedObjectProfile;
+                this.OptObjectSkins.AddRange(dialog.SelectedSkins);
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
         }
 
         private void TakeImages()
@@ -308,11 +351,16 @@ namespace XwaOptShowcase
         private void TakeScreenshot(string fileName, int width, int height)
         {
             var device = new RenderTargetDeviceResources((uint)width, (uint)height);
-            var component = new MainGameComponent()
+            var component = new MainGameComponent
             {
                 BackgroundBitmapFileName = BackgroundBitmapFileName,
-                OptFileName = OptFileName
+                OptFileName = OptFileName,
+                OptVersion = OptVersion,
+                OptObjectProfile = OptObjectProfile
             };
+
+            component.OptObjectSkins.Clear();
+            component.OptObjectSkins.AddRange(OptObjectSkins);
 
             component.CreateDeviceDependentResources(device);
             component.CreateWindowSizeDependentResources();
@@ -343,8 +391,13 @@ namespace XwaOptShowcase
                     var component = new MainGameComponent()
                     {
                         BackgroundBitmapFileName = BackgroundBitmapFileName,
-                        OptFileName = OptFileName
+                        OptFileName = OptFileName,
+                        OptVersion = OptVersion,
+                        OptObjectProfile = OptObjectProfile
                     };
+
+                    component.OptObjectSkins.Clear();
+                    component.OptObjectSkins.AddRange(OptObjectSkins);
 
                     var timer = new FixedTimer();
 

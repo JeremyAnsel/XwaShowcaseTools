@@ -52,9 +52,10 @@ namespace XwaOptShowcase
         private D3D11BlendState AdditiveBlendingBlendState;
         private D3D11BlendState SrcAlphaBlendingBlendState;
 
-        public OptComponent(string optFilename, string optObjectProfile, List<string> optObjectSkins)
+        public OptComponent(string optFilename, int version, string optObjectProfile, List<string> optObjectSkins)
         {
             this.OptFilename = optFilename;
+            this.OptVersion = version;
             this.OptObjectProfile = optObjectProfile ?? "Default";
             this.OptObjectSkins.AddRange(optObjectSkins ?? new());
         }
@@ -62,6 +63,8 @@ namespace XwaOptShowcase
         public D3D11FeatureLevel MinimalFeatureLevel => D3D11FeatureLevel.FeatureLevel100;
 
         public string OptFilename { get; private set; }
+
+        public int OptVersion { get; private set; }
 
         public string OptObjectProfile { get; private set; }
 
@@ -103,7 +106,7 @@ namespace XwaOptShowcase
                 objectProfile = objectProfiles["Default"];
             }
 
-            opt = OptModel.GetTransformedOpt(opt, 0, objectProfile, this.OptObjectSkins);
+            opt = OptModel.GetTransformedOpt(opt, this.OptVersion, objectProfile, this.OptObjectSkins);
 
             opt.Scale(XMVector3.Length(SceneConstants.VecEye).X * 1.2f / (opt.Size * OptFile.ScaleFactor));
 
@@ -411,9 +414,17 @@ namespace XwaOptShowcase
 
             foreach (var textureKey in opt.Textures)
             {
-                var optTextureName = textureKey.Key;
+                string optTextureName = textureKey.Key;
 
-                IList<string> materialLines = XwaHooksConfig.GetFileLines(materialFilename, optTextureName);
+                string textureSection = optTextureName;
+                int textureFgIndex = textureSection.IndexOf("_fg_");
+
+                if (textureFgIndex != -1)
+                {
+                    textureSection = textureSection[..textureFgIndex];
+                }
+
+                IList<string> materialLines = XwaHooksConfig.GetFileLines(materialFilename, textureSection);
                 string normalMapEntry = XwaHooksConfig.GetFileKeyValue(materialLines, "NormalMap");
                 string[] normalMapEntryParts = normalMapEntry.Split('-');
 
