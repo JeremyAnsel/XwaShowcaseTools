@@ -388,7 +388,7 @@ namespace XwaOptShowcase
 
                     var device = new RenderTargetDeviceResources((uint)width, (uint)height);
 
-                    var component = new MainGameComponent()
+                    var component = new MainGameComponent
                     {
                         BackgroundBitmapFileName = BackgroundBitmapFileName,
                         OptFileName = OptFileName,

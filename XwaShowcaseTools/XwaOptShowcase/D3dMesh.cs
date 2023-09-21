@@ -11,8 +11,11 @@ namespace XwaOptShowcase
 
         public D3dMesh(DeviceResources deviceResources, SceneMesh mesh)
         {
+            this.Mesh = mesh;
             this.CreateDeviceDependentResources(deviceResources, mesh);
         }
+
+        public SceneMesh Mesh { get; private set; }
 
         public D3D11Buffer VertexBuffer => this.vertexBuffer;
 

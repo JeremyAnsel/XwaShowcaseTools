@@ -24,6 +24,9 @@ namespace XwaOptShowcase
 
         private readonly List<D3dMesh> meshes = new();
 
+        private D3D11Buffer vertexBuffer;
+        private D3D11Buffer indexBuffer;
+
         private D3D11VertexShader shaderVSMain;
         private D3D11PixelShader shaderPSMain;
         private D3D11PixelShader shaderPSAmbient;
@@ -517,7 +520,7 @@ namespace XwaOptShowcase
                     opt.Textures.TryGetValue(optTextureName, out Texture texture);
                     sceneMesh.HasAlpha = texture is null ? false : texture.HasAlpha;
 
-                    ushort index = 0;
+                    int index = 0;
 
                     foreach (var optFace in optFaceGroup.Faces)
                     {
@@ -550,8 +553,8 @@ namespace XwaOptShowcase
 
                         if (positionsIndex.D >= 0)
                         {
-                            sceneMesh.Indices.Add((ushort)(index - 3U));
-                            sceneMesh.Indices.Add((ushort)(index - 1U));
+                            sceneMesh.Indices.Add(index - 3);
+                            sceneMesh.Indices.Add(index - 1);
 
                             vertex.Position = positions.ElementAtOrDefault(positionsIndex.D);
                             vertex.Normal = normals.ElementAtOrDefault(normalsIndex.D);
@@ -568,6 +571,17 @@ namespace XwaOptShowcase
             {
                 var mesh = new D3dMesh(this.deviceResources, mesh3d);
                 this.meshes.Add(mesh);
+            }
+
+            int indicesCount = sceneMeshes.Where(t => t.HasAlpha).Sum(t => t.Indices.Count);
+
+            if (indicesCount != 0)
+            {
+                this.vertexBuffer = device.CreateBuffer(
+                    new D3D11BufferDesc(D3dVertex.Size * (uint)indicesCount, D3D11BindOptions.VertexBuffer));
+
+                this.indexBuffer = device.CreateBuffer(
+                    new D3D11BufferDesc(4 * (uint)indicesCount, D3D11BindOptions.IndexBuffer));
             }
         }
 
@@ -600,6 +614,9 @@ namespace XwaOptShowcase
             }
 
             this.meshes.Clear();
+
+            D3D11Utils.DisposeAndNull(ref this.vertexBuffer);
+            D3D11Utils.DisposeAndNull(ref this.indexBuffer);
 
             D3D11Utils.DisposeAndNull(ref this.shaderVSMain);
             D3D11Utils.DisposeAndNull(ref this.shaderPSMain);
@@ -745,6 +762,10 @@ namespace XwaOptShowcase
                 return;
             }
 
+            List<SceneMesh> sceneTransparentMeshes = this.BuildSceneTransparentMeshes();
+            this.SortSceneMeshes(sceneTransparentMeshes, worldMatrix * this.WorldTransform * this.ViewTransform);
+            this.GroupSceneMeshes(sceneTransparentMeshes);
+
             // Render the scene ambient - renders the scene with ambient lighting
             this.RenderSceneSolid(
                 this.shaderVSMain,
@@ -754,15 +775,6 @@ namespace XwaOptShowcase
                 this.EnableDepthDepthStencilState,
                 0,
                 this.DisableCullingRasterizerState);
-
-            //this.RenderSceneTransparent(
-            //    this.shaderVSMain,
-            //    null,
-            //    null, //this.shaderPSDepth,
-            //    this.AlphaBlendingBlendState,
-            //    this.DisableDepthWriteDepthStencilState,
-            //    0,
-            //    this.DisableCullingRasterizerState);
 
             context.ClearDepthStencilView(this.deviceResources.D3DDepthStencilView, D3D11ClearOptions.Stencil, 1.0f, 0);
 
@@ -777,28 +789,10 @@ namespace XwaOptShowcase
                     this.TwoSidedStencilDepthStencilState,
                     1,
                     this.DisableCullingRasterizerState);
-
-                //this.RenderSceneTransparent(
-                //    this.shaderVSShadow,
-                //    this.shaderGSShadow,
-                //    this.shaderPSShadow,
-                //    this.SrcAlphaBlendingBlendState,
-                //    this.TwoSidedStencilDepthStencilState,
-                //    1,
-                //    this.DisableCullingRasterizerState);
             }
             else
             {
                 this.RenderSceneSolid(
-                    this.shaderVSShadow,
-                    this.shaderGSShadow,
-                    this.shaderPSShadow,
-                    this.DisableFrameBufferBlendState,
-                    this.TwoSidedStencilDepthStencilState,
-                    1,
-                    this.DisableCullingRasterizerState);
-
-                this.RenderSceneTransparent(
                     this.shaderVSShadow,
                     this.shaderGSShadow,
                     this.shaderPSShadow,
@@ -827,23 +821,15 @@ namespace XwaOptShowcase
                 0,
                 this.DisableCullingRasterizerState);
 
-            this.RenderSceneTransparent(
-                this.shaderVSMain,
-                null,
-                this.shaderPSAmbient,
-                this.AlphaBlendingBlendState,
-                this.RenderInShadowsDepthStencilState,
-                0,
-                this.DisableCullingRasterizerState);
-
-            this.RenderSceneTransparent(
+            this.RenderSceneMeshes(
                 this.shaderVSMain,
                 null,
                 this.shaderPSMain,
                 this.AlphaBlendingBlendState,
-                this.RenderNonShadowsDepthStencilState,
+                this.DisableDepthWriteDepthStencilState,
                 0,
-                this.DisableCullingRasterizerState);
+                this.DisableCullingRasterizerState,
+                sceneTransparentMeshes);
         }
 
         private void RenderSceneSolid(
@@ -879,7 +865,7 @@ namespace XwaOptShowcase
                     new uint[] { D3dVertex.Size },
                     new uint[] { 0 });
 
-                context.InputAssemblerSetIndexBuffer(mesh.IndexBuffer, DxgiFormat.R16UInt, 0);
+                context.InputAssemblerSetIndexBuffer(mesh.IndexBuffer, DxgiFormat.R32UInt, 0);
 
                 this.textureViews.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture);
                 this.textureViews2.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture2);
@@ -924,7 +910,7 @@ namespace XwaOptShowcase
                     new uint[] { D3dVertex.Size },
                     new uint[] { 0 });
 
-                context.InputAssemblerSetIndexBuffer(mesh.IndexBuffer, DxgiFormat.R16UInt, 0);
+                context.InputAssemblerSetIndexBuffer(mesh.IndexBuffer, DxgiFormat.R32UInt, 0);
 
                 this.textureViews.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture);
                 this.textureViews2.TryGetValue(mesh.Texture, out D3D11ShaderResourceView texture2);
@@ -934,6 +920,138 @@ namespace XwaOptShowcase
 
                 context.DrawIndexed(mesh.IndicesCount, 0, 0);
             }
+        }
+
+        private void RenderSceneMeshes(
+            D3D11VertexShader vs,
+            D3D11GeometryShader gs,
+            D3D11PixelShader ps,
+            D3D11BlendState blendState,
+            D3D11DepthStencilState depthStencilState,
+            uint stencilReference,
+            D3D11RasterizerState rasterizerState,
+            List<SceneMesh> sceneMeshes)
+        {
+            var context = this.deviceResources.D3DContext;
+
+            context.VertexShaderSetShader(vs, null);
+            context.VertexShaderSetConstantBuffers(0, new[] { this.constantBuffer });
+            context.GeometryShaderSetShader(gs, null);
+            context.GeometryShaderSetConstantBuffers(0, new[] { this.constantBuffer });
+            context.PixelShaderSetShader(ps, null);
+            context.PixelShaderSetConstantBuffers(0, new[] { this.constantBuffer });
+            context.PixelShaderSetSamplers(0, new[] { this.sampler });
+            context.OutputMergerSetBlendState(blendState, new float[] { 0.0f, 0.0f, 0.0f, 0.0f }, 0xFFFFFFFF);
+            context.OutputMergerSetDepthStencilState(depthStencilState, stencilReference);
+            context.RasterizerStageSetState(rasterizerState);
+
+            context.InputAssemblerSetInputLayout(this.inputLayout);
+            context.InputAssemblerSetPrimitiveTopology(D3D11PrimitiveTopology.TriangleList);
+
+            context.InputAssemblerSetVertexBuffers(
+                0,
+                new[] { this.vertexBuffer },
+                new uint[] { D3dVertex.Size },
+                new uint[] { 0 });
+
+            context.InputAssemblerSetIndexBuffer(this.indexBuffer, DxgiFormat.R32UInt, 0);
+
+            foreach (var sceneMesh in sceneMeshes)
+            {
+                var vertices = sceneMesh.Vertices.ToArray();
+                var indices = sceneMesh.Indices.ToArray();
+
+                var vertexBox = new D3D11Box(0, 0, 0, D3dVertex.Size * (uint)vertices.Length, 1, 1);
+                context.UpdateSubresource(this.vertexBuffer, 0, vertexBox, vertices, 0, 0);
+                var indexBox = new D3D11Box(0, 0, 0, 4 * (uint)indices.Length, 1, 1);
+                context.UpdateSubresource(this.indexBuffer, 0, indexBox, indices, 0, 0);
+
+                this.textureViews.TryGetValue(sceneMesh.Texture, out D3D11ShaderResourceView texture);
+                this.textureViews2.TryGetValue(sceneMesh.Texture, out D3D11ShaderResourceView texture2);
+                this.textureViewsNormalMaps.TryGetValue(sceneMesh.Texture, out D3D11ShaderResourceView textureNormapMap);
+
+                context.PixelShaderSetShaderResources(0, new[] { texture, texture2, textureNormapMap });
+
+                context.DrawIndexed((uint)sceneMesh.Indices.Count, 0, 0);
+            }
+        }
+
+        private List<SceneMesh> BuildSceneTransparentMeshes()
+        {
+            var sceneMeshes = new List<SceneMesh>();
+
+            foreach (var mesh in this.meshes.Where(t => t.HasAlpha))
+            {
+                for (int i = 0; i < mesh.Mesh.Indices.Count; i += 3)
+                {
+                    var sceneMesh = new SceneMesh
+                    {
+                        HasAlpha = true,
+                        Texture = mesh.Texture,
+                    };
+
+                    sceneMesh.Vertices.Add(mesh.Mesh.Vertices[mesh.Mesh.Indices[i]]);
+                    sceneMesh.Indices.Add(0);
+
+                    sceneMesh.Vertices.Add(mesh.Mesh.Vertices[mesh.Mesh.Indices[i + 1]]);
+                    sceneMesh.Indices.Add(1);
+
+                    sceneMesh.Vertices.Add(mesh.Mesh.Vertices[mesh.Mesh.Indices[i + 2]]);
+                    sceneMesh.Indices.Add(2);
+
+                    sceneMeshes.Add(sceneMesh);
+                }
+            }
+
+            return sceneMeshes;
+        }
+
+        private void SortSceneMeshes(List<SceneMesh> sceneMeshes, in XMMatrix m)
+        {
+            foreach (var mesh in sceneMeshes)
+            {
+                mesh.ComputeDepth(m);
+            }
+
+            Quicksort.Sort(sceneMeshes);
+        }
+
+        private void GroupSceneMeshes(List<SceneMesh> sceneMeshes)
+        {
+            var newSceneMeshes = new List<SceneMesh>();
+
+            SceneMesh currentMesh = null;
+
+            for (int meshIndex = 0; meshIndex < sceneMeshes.Count; meshIndex++)
+            {
+                var mesh = sceneMeshes[meshIndex];
+
+                if (currentMesh is null)
+                {
+                    currentMesh = mesh;
+                    newSceneMeshes.Add(currentMesh);
+                    continue;
+                }
+
+                if (mesh.Texture != currentMesh.Texture)
+                {
+                    currentMesh = null;
+                    meshIndex--;
+                    continue;
+                }
+
+                currentMesh.Vertices.AddRange(mesh.Vertices);
+
+                int baseIndex = currentMesh.Indices.Count;
+
+                for (int i = 0; i < mesh.Indices.Count; i++)
+                {
+                    currentMesh.Indices.Add(baseIndex + mesh.Indices[i]);
+                }
+            }
+
+            sceneMeshes.Clear();
+            sceneMeshes.AddRange(newSceneMeshes);
         }
     }
 }
