@@ -1,0 +1,41 @@
+// scene_all_starfighters.txt
+[Config]
+OptDirectory = C:\xwa\xwa_xwau_test_562\FlightModels\
+TextFontName = Verdana
+TextFontSize = 60
+OrderScene = 1
+CameraAngle = 0
+CameraElevation = 0
+
+[Scene]
+// title, fileName, version, objectProfile, skins
+, ZEROGUTILITY.OPT, 0, , 
+, ZEROGSTORMTROOPER.OPT, 0, , 
+A-Wing, Awing.OPT, 0, , 
+B-Wing, Bwing.OPT, 0, , 
+X-Wing, Xwing.OPT, 0, , 
+Y-Wing, Ywing.OPT, 0, , 
+Z-95 Headhunter, Z-95.OPT, 0, , 
+Assault Gunboat, AssaultGunboat.OPT, 0, , 
+Authority IRD, IRDFighter.OPT, 0, , 
+Cloakshape Fighter, CloakShapeFighter.OPT, 0, , 
+Firespray Attack Ship, SlaveOne.OPT, 0, , 
+Missile Boat, MissileBoat.OPT, 0, , 
+Pinook Fighter, PinookFighter.OPT, 0, , 
+Planetary Fighter, PlanetaryFighter.OPT, 0, , 
+Preybird Fighter, PreybirdFighter.OPT, 0, , 
+Pursuer Enforcement Ship, Pursuer1.OPT, 0, , 
+Razor Fighter, RazorFighter.OPT, 0, , 
+Skipray Blastboat, SkiprayBlastboat.OPT, 0, , 
+Supa Fighter, SupaFighter.OPT, 0, , 
+T-Wing, Twing.OPT, 0, , 
+Toscan Fighter, ToscanFighter.OPT, 0, , 
+TIE Fighter, TieFighter.OPT, 0, , 
+TIE Interceptor, TieInterceptor.OPT, 0, , 
+TIE Avenger, TieAvenger.OPT, 0, , 
+TIE Bomber, TieBomber.OPT, 0, , 
+TIE Defender, TieDefender.OPT, 0, , 
+TIE Experimental M2, TieBigGun.OPT, 0, , 
+TIE Experimental M3, TieWarheads.OPT, 0, , 
+TIE Experimental M4, TieBomb.OPT, 0, , 
+TIE Experimental M5, TieBooster.OPT, 0, , 

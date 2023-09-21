@@ -15,3 +15,16 @@ To restart, press F9.
 To switch to fullscreen, press F11.
 To hide the time, press F12.
 To exit the tool, you can press the Q key.
+
+XwaSizeComparison runs on Windows 32/64 bits with the .NET framework 6.0.
+
+To open another scene, press O.
+To generate a video, press the Return key. The video is saved in the "Screenshots" folder.
+To take a screenshot, press P.
+To stop the animation, press the Spacebar.
+To move the animation, use the arrow keys.
+To restart, press F9.
+To switch to fullscreen, press F11.
+To hide the time, press F12.
+To exit the tool, you can press the Q key.
+

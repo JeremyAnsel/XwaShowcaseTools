@@ -1,0 +1,18 @@
+// scene_imperial_starships.txt
+[Config]
+OptDirectory = C:\xwa\xwa_xwau_test_562\FlightModels\
+TextFontName = Verdana
+TextFontSize = 60
+OrderScene = 1
+CameraAngle = 0
+CameraElevation = 0
+
+[Scene]
+// title, fileName, version, objectProfile, skins
+, ZEROGSTORMTROOPER.OPT, 0, , 
+, TieFighterExterior.OPT, 0, , 
+, INTERDICTOR2.OPT, 0, , 
+, IMPRESEARCHSHIP.OPT, 0, , 
+, VICTORYSTARDESTROYER2.OPT, 0, , 
+, IMPERIALSTARDESTROYER2.OPT, 0, , 
+, SUPERSTARDESTROYER.OPT, 0, , 

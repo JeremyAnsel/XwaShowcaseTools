@@ -1,0 +1,15 @@
+﻿[Config]
+OptDirectory = C:\xwa\xwa_xwau_test_562\FlightModels\
+TextFontName = Verdana
+TextFontSize = 60
+OrderScene = 1
+CameraAngle = 0
+CameraElevation = 0
+
+[Scene]
+// title, fileName, version, objectProfile, skins
+, ZEROGUTILITY.OPT, 0, , 
+RZ-1 A-Wing, AWINGEXTERIOR.OPT, 0, , 
+A/SF-01 B-Wing, BWINGEXTERIOR.OPT, 0, , 
+T-65C A2 X-Wing Starfighter, XWINGEXTERIOR.OPT, 0, , 
+BTL-A4 Y-Wing Starfighter, YWINGEXTERIOR.OPT, 0, , 

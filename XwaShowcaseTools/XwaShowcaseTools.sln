@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XwaOptShowcase", "XwaOptShowcase\XwaOptShowcase.csproj", "{16DD56F0-B92C-440B-9D83-C00299C0D9AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XwaOptShowcase", "XwaOptShowcase\XwaOptShowcase.csproj", "{16DD56F0-B92C-440B-9D83-C00299C0D9AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoLib", "VideoLib\VideoLib.csproj", "{45135B02-E651-4976-8AAB-DEF616B809B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideoLib", "VideoLib\VideoLib.csproj", "{45135B02-E651-4976-8AAB-DEF616B809B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XwaSizeComparison", "XwaSizeComparison\XwaSizeComparison.csproj", "{0C28AB6E-043D-4C55-9388-4763662B54A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{45135B02-E651-4976-8AAB-DEF616B809B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45135B02-E651-4976-8AAB-DEF616B809B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45135B02-E651-4976-8AAB-DEF616B809B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C28AB6E-043D-4C55-9388-4763662B54A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C28AB6E-043D-4C55-9388-4763662B54A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C28AB6E-043D-4C55-9388-4763662B54A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C28AB6E-043D-4C55-9388-4763662B54A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

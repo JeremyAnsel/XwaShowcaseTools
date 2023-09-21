@@ -1,0 +1,40 @@
+// scene_all_starships.txt
+[Config]
+OptDirectory = C:\xwa\xwa_xwau_test_562\FlightModels\
+TextFontName = Verdana
+TextFontSize = 60
+OrderScene = 1
+CameraAngle = 0
+CameraElevation = 0
+
+[Scene]
+// title, fileName, version, objectProfile, skins
+, ZEROGUTILITY.OPT, 0, , 
+, ZEROGSTORMTROOPER.OPT, 0, , 
+Bulk Cruiser, BulkCruiser.OPT, 0, , 
+C-3 Passenger Liner, PassengerLiner.OPT, 0, , 
+Carrack Cruiser, CarrackCruiser.OPT, 0, , 
+Corellian Corvette, Corvette2Standard.OPT, 0, , 
+Corellian Gunship, CorellianGunship.OPT, 0, , 
+Dreadnaught, Dreadnaught2.OPT, 0, , 
+Lancer Frigate, LancerFrigate.OPT, 0, , 
+Marauder Corvette, MarauderCorvette.OPT, 0, , 
+Modified Corvette, ModCorvette.OPT, 0, , 
+Assault Frigate, AssaultFrigate.OPT, 0, , 
+MC40a Light Cruiser, CalamariLightCruiser.OPT, 0, , 
+MC80 Home One Star Cruiser, CalamariHomeOne.OPT, 0, , 
+MC80 Liberty Star Cruiser, CalamariWinged.OPT, 0, , 
+MC80 Reef Home Star Cruiser, CalamariReefHome.OPT, 0, , 
+MC80A Calamari Star Cruiser, CalamariCruiserNew.OPT, 0, , 
+Modified Strike Cruiser, ModStrikeCruiser.OPT, 0, , 
+Escort Carrier, EscortCarrier.OPT, 0, , 
+Nebulon-B Frigate, Frigate2Standard.OPT, 0, , 
+Nebulon-B2 Frigate, ModFrigate.OPT, 0, , 
+Strike Cruiser, StrikeCruiser.OPT, 0, , 
+Imperial I Star Destroyer, ImperialStarDestroyer.OPT, 0, , 
+Imperial II Star Destroyer, ImperialStarDestroyer2.OPT, 0, , 
+Imperial Research Ship, ImpResearchShip.OPT, 0, , 
+Interdictor, Interdictor2.OPT, 0, , 
+Super Star Destroyer, SuperStarDestroyer.OPT, 0, , 
+Victory I Star Destroyer, VictoryStarDestroyer.OPT, 0, , 
+Victory II Star Destroyer, VictoryStarDestroyer2.OPT, 0, , 

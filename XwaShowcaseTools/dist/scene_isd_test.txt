@@ -1,0 +1,14 @@
+// scene_isd_test.txt
+[Config]
+OptDirectory = C:\xwa\xwa_xwau_test_562\FlightModels\
+TextFontName = Verdana
+TextFontSize = 60
+OrderScene = 1
+CameraAngle = 0
+CameraElevation = 0
+
+[Scene]
+// title, fileName, version, objectProfile, skins
+, ZEROGSTORMTROOPER.OPT, 0, , 
+, TieFighterExterior.OPT, 0, , 
+, ImperialStarDestroyer.OPT, 0, , 

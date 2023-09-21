@@ -1,0 +1,18 @@
+// scene_isd_profiles.txt
+[Config]
+OptDirectory = C:\xwa\xwa_xwau_test_562\FlightModels\
+TextFontName = Verdana
+TextFontSize = 60
+OrderScene = 1
+CameraAngle = 0
+CameraElevation = 0
+
+[Scene]
+// title, fileName, version, objectProfile, skins
+, ZEROGSTORMTROOPER.OPT, 0, , 
+, TieFighterExterior.OPT, 0, , 
+IMPERIALSTARDESTROYER, ImperialStarDestroyer.OPT, 0, ANH, 
+IMPERIALSTARDESTROYER, ImperialStarDestroyer.OPT, 0, TESB, 
+IMPERIALSTARDESTROYER, ImperialStarDestroyer.OPT, 0, Chimaera, Chimaera
+IMPERIALSTARDESTROYER, ImperialStarDestroyer.OPT, 0, , FinalOrder
+IMPERIALSTARDESTROYER, ImperialStarDestroyer.OPT, 0, , Republic

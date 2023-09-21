@@ -1,0 +1,20 @@
+// scene_republic_ships.txt
+[Config]
+OptDirectory = C:\xwa\xwa_en_tftc_133\FlightModels\
+TextFontName = Verdana
+TextFontSize = 60
+OrderScene = 1
+CameraAngle = 0
+CameraElevation = 0
+
+[Scene]
+// title, fileName, version, objectProfile, skins
+, ZEROGUTILITY.OPT, 0, , 
+Y-Wing/B, YwingB.OPT, 0, , 
+V-19 Torrent, V-19.OPT, 0, , 
+V-Wing, Vwing.OPT, 0, , 
+Arquitens Light Cruiser, ArquitensTFTC.OPT, 0, , 
+Ecliptic Star Frigate, Randecliptic.OPT, 0, , 
+Acclamator Cruiser, AcclamatorTFTC.OPT, 0, , 
+Valiant Cruiser, ValiantCruiser.OPT, 0, , 
+Venator Star Destroyer, VenatorTFTC.OPT, 0, , 
