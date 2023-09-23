@@ -231,6 +231,48 @@ namespace XwaOptShowcase
                         this.Exit();
                         break;
 
+                    case VirtualKey.NumPad1:
+                        // Isometric
+                        this.camera.SetWorldMatrix(XMMatrix.Identity);
+                        this.camera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
+                        break;
+
+                    case VirtualKey.NumPad2:
+                        // Bottom
+                        this.camera.SetWorldMatrix(XMMatrix.Identity);
+                        this.camera.SetViewQuat(XMQuaternion.RotationRollPitchYaw(XMMath.PIDivTwo, 0, 0));
+                        break;
+
+                    case VirtualKey.NumPad3:
+                        // Rear
+                        this.camera.SetWorldMatrix(XMMatrix.Identity);
+                        this.camera.SetViewQuat(XMQuaternion.RotationRollPitchYaw(0, 0, 0));
+                        break;
+
+                    case VirtualKey.NumPad4:
+                        // Left
+                        this.camera.SetWorldMatrix(XMMatrix.Identity);
+                        this.camera.SetViewQuat(XMQuaternion.RotationRollPitchYaw(0, -XMMath.PIDivTwo, 0));
+                        break;
+
+                    case VirtualKey.NumPad5:
+                        // Front
+                        this.camera.SetWorldMatrix(XMMatrix.Identity);
+                        this.camera.SetViewQuat(XMQuaternion.RotationRollPitchYaw(0, XMMath.PI, 0));
+                        break;
+
+                    case VirtualKey.NumPad6:
+                        // Right
+                        this.camera.SetWorldMatrix(XMMatrix.Identity);
+                        this.camera.SetViewQuat(XMQuaternion.RotationRollPitchYaw(0, XMMath.PIDivTwo, 0));
+                        break;
+
+                    case VirtualKey.NumPad8:
+                        // Top
+                        this.camera.SetWorldMatrix(XMMatrix.Identity);
+                        this.camera.SetViewQuat(XMQuaternion.RotationRollPitchYaw(-XMMath.PIDivTwo, 0, 0));
+                        break;
+
                     case VirtualKey.B:
                         {
                             bool isFullscreen = this.DeviceResources.SwapChain.GetFullscreenState();
