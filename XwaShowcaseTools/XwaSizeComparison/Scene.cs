@@ -24,6 +24,8 @@ namespace XwaSizeComparison
 
         public int CameraElevation { get; set; }
 
+        public float CameraDistanceFactor { get; set; }
+
         public List<SceneOpt> SceneOpts { get; } = new();
 
         public static Scene FromFile(string sceneFileName)
@@ -51,6 +53,19 @@ namespace XwaSizeComparison
             scene.OrderScene = XwaHooksConfig.GetFileKeyValueInt(configLines, "OrderScene", 1) != 0;
             scene.CameraAngle = XwaHooksConfig.GetFileKeyValueInt(configLines, "CameraAngle", 0);
             scene.CameraElevation = XwaHooksConfig.GetFileKeyValueInt(configLines, "CameraElevation", 0);
+
+            if (float.TryParse(
+                XwaHooksConfig.GetFileKeyValue(configLines, "CameraDistanceFactor"),
+                NumberStyles.Float,
+                CultureInfo.InvariantCulture,
+                out float zoomFactor))
+            {
+                scene.CameraDistanceFactor = zoomFactor;
+            }
+            else
+            {
+                scene.CameraDistanceFactor = 1.0f;
+            }
 
             IList<string> sceneLines = XwaHooksConfig.GetFileLines(sceneFileName, "Scene");
             bool wasErrorShown = false;

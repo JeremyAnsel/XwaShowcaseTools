@@ -42,6 +42,7 @@ namespace XwaSizeComparison
             this.ViewTransform = XMMatrix.LookAtLH(SceneConstants.VecEye, SceneConstants.VecAt, SceneConstants.VecUp);
             this.CameraAngle = 0;
             this.CameraElevation = 0;
+            this.CameraDistanceFactor = 1.0f;
         }
 
         public D3D11FeatureLevel MinimalFeatureLevel => D3D11FeatureLevel.FeatureLevel100;
@@ -51,6 +52,8 @@ namespace XwaSizeComparison
         public int CameraAngle { get; set; }
 
         public int CameraElevation { get; set; }
+
+        public float CameraDistanceFactor { get; set; }
 
         public XMMatrix ProjectionTransform { get; set; }
 
@@ -122,6 +125,7 @@ namespace XwaSizeComparison
 
             this.CameraAngle = scene.CameraAngle;
             this.CameraElevation = scene.CameraElevation;
+            this.CameraDistanceFactor = scene.CameraDistanceFactor;
         }
 
         public void ReleaseScene()
@@ -191,7 +195,7 @@ namespace XwaSizeComparison
 
             XMMatrix world = XMMatrix.TranslationFromVector(XMVector.Lerp(-t0, -t1, t));
 
-            float optSize = opt0.OptSize * (1 - t) + opt1.OptSize * t;
+            float optSize = Math.Max(opt0.OptSpanSize.X, opt0.OptSpanSize.Z) * (1 - t) + Math.Max(opt1.OptSpanSize.X, opt1.OptSpanSize.Z) * t;
             float optSizeDelta1 = 30.0f;
             float optSizeScale1 = 3.0f;
             float optSizeScale2 = 1.0f;
@@ -200,9 +204,7 @@ namespace XwaSizeComparison
             float optSpanSizeZ = opt0.OptSpanSize.Z * (1 - t) + opt1.OptSpanSize.Z * t;
             float optSpanSizeY = opt0.OptSpanSize.Y * (1 - t) + opt1.OptSpanSize.Y * t;
 
-            //XMVector vecEye = new(0.0f, optSpanSizeZ * 0.8f, optSize * 0.6f, 0.0f);
-            XMVector vecEye = new(0.0f, optSpanSizeZ * 0.5f, optSize * 0.35f, 0.0f);
-            //XMVector vecAt = new(0.0f, optSpanSizeZ * 0.7f, -optSpanSizeY / 2, 0.0f);
+            XMVector vecEye = new(0.0f, optSpanSizeZ * 0.5f, optSize * 0.5f * this.CameraDistanceFactor, 0.0f);
             XMVector vecAt = new(0.0f, optSpanSizeZ * 0.5f, -optSpanSizeY / 2, 0.0f);
             XMVector vecUp = new(0.0f, 1.0f, 0.0f, 0.0f);
             XMMatrix viewTransform = XMMatrix.LookAtLH(vecEye, vecAt, vecUp);

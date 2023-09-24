@@ -15,8 +15,17 @@ To restart, press F9.
 To switch to fullscreen, press F11.
 To hide the time, press F12.
 To exit the tool, you can press the Q key.
+To change the view:
+Num 1: Isometric
+Num 2: Bottom
+Num 3: Rear
+Num 4: Left
+Num 5: Front
+Num 6: Right
+Num 8: Top
 
 XwaSizeComparison runs on Windows 32/64 bits with the .NET framework 6.0.
+Before launching the tool you have to edit the Scene.txt file. Modify the OptDirectory setting and enter the path to the FlightModels directory of your XWAU install.
 
 To open another scene, press O.
 To generate a video, press the Return key. The video is saved in the "Screenshots" folder.

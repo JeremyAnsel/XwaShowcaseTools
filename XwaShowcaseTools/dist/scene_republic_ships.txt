@@ -6,6 +6,7 @@ TextFontSize = 60
 OrderScene = 1
 CameraAngle = 0
 CameraElevation = 0
+CameraDistanceFactor = 1.0
 
 [Scene]
 // title, fileName, version, objectProfile, skins
