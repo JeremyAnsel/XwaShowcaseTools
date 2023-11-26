@@ -156,6 +156,14 @@ namespace XwaSizeComparison
 
             DatImage normalMapDatImage = normalMapDatGroup.Images.FirstOrDefault(t => t.GroupId == normalMapDatGroupId && t.ImageId == normalMapDatImageId);
 
+            if (normalMapDatImage is null)
+            {
+                return null;
+            }
+
+            normalMapDatImage.ConvertToFormat25();
+            normalMapDatImage.FlipUpsideDown();
+
             Texture texture = ConvertDatImageToTexture(normalMapDatImage);
             texture.GenerateMipmaps();
 

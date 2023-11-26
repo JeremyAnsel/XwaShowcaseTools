@@ -419,6 +419,7 @@ namespace XwaOptShowcase
             }
 
             newTexture.Convert8To32();
+            //FlipPixels(newTexture.ImageData, newTexture.Width, newTexture.Height);
 
             int size = baseTexture.Width * baseTexture.Height;
             byte[] src = newTexture.ImageData;
@@ -431,6 +432,23 @@ namespace XwaOptShowcase
                 dst[i * 4 + 0] = (byte)(dst[i * 4 + 0] * (255 - a) / 255 + src[i * 4 + 0] * a / 255);
                 dst[i * 4 + 1] = (byte)(dst[i * 4 + 1] * (255 - a) / 255 + src[i * 4 + 1] * a / 255);
                 dst[i * 4 + 2] = (byte)(dst[i * 4 + 2] * (255 - a) / 255 + src[i * 4 + 2] * a / 255);
+            }
+        }
+
+        private static void FlipPixels(byte[] pixels, int width, int height)
+        {
+            int w = width;
+            int h = height;
+            int stride = w * 4;
+
+            for (int i = 0; i < h / 2; i++)
+            {
+                for (int j = 0; j < stride; j++)
+                {
+                    byte v = pixels[i * stride + j];
+                    pixels[i * stride + j] = pixels[(h - 1 - i) * stride + j];
+                    pixels[(h - 1 - i) * stride + j] = v;
+                }
             }
         }
 

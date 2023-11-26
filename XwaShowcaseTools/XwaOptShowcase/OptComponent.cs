@@ -463,6 +463,9 @@ namespace XwaOptShowcase
                     continue;
                 }
 
+                normalMapDatImage.ConvertToFormat25();
+                normalMapDatImage.FlipUpsideDown();
+
                 D3D11SubResourceData[] textureSubResData = new D3D11SubResourceData[1];
                 byte[] imageData = normalMapDatImage.GetImageData();
                 textureSubResData[0] = new D3D11SubResourceData(imageData, (uint)normalMapDatImage.Width * 4);

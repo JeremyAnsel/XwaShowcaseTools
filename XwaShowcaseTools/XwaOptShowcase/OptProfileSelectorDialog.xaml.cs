@@ -26,7 +26,7 @@ namespace XwaOptShowcase
 
             this.OptFileName = optFileName;
 
-            OptFile optFile = OptFile.FromFile(optFileName);
+            OptFile optFile = OptFile.FromFile(optFileName, false);
 
             this.OptVersions = Enumerable.Range(0, optFile.MaxTextureVersion).ToList();
             this.OptObjectProfiles = OptModel.GetObjectProfiles(OptFileName).Keys.ToList();
