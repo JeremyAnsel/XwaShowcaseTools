@@ -2,6 +2,7 @@
 using JeremyAnsel.DirectX.GameWindow;
 using JeremyAnsel.DirectX.SdkCamera;
 using JeremyAnsel.DirectX.Window;
+using JeremyAnsel.Xwa.OptTransform.Wpf;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -347,7 +348,7 @@ namespace XwaOptShowcase
 
                 this.OptVersion = dialog.SelectedVersion;
                 this.OptObjectProfile = dialog.SelectedObjectProfile;
-                this.OptObjectSkins.AddRange(dialog.SelectedSkins);
+                this.OptObjectSkins.AddRange(dialog.SelectedSkinsKeys);
             });
 
             thread.SetApartmentState(ApartmentState.STA);

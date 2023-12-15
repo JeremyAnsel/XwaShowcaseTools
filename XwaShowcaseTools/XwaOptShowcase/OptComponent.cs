@@ -5,6 +5,7 @@ using JeremyAnsel.DirectX.GameWindow;
 using JeremyAnsel.Xwa.Dat;
 using JeremyAnsel.Xwa.HooksConfig;
 using JeremyAnsel.Xwa.Opt;
+using JeremyAnsel.Xwa.OptTransform;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -101,15 +102,7 @@ namespace XwaOptShowcase
 
             OptFile opt = OptFile.FromFile(this.OptFilename);
 
-            var objectProfiles = OptModel.GetObjectProfiles(opt.FileName);
-            //var objectSkins = OptModel.GetSkins(opt.FileName);
-
-            if (!objectProfiles.TryGetValue(this.OptObjectProfile, out List<int> objectProfile))
-            {
-                objectProfile = objectProfiles["Default"];
-            }
-
-            opt = OptModel.GetTransformedOpt(opt, this.OptVersion, objectProfile, this.OptObjectSkins);
+            opt = OptTransformModel.GetTransformedOpt(opt, this.OptVersion, this.OptObjectProfile, this.OptObjectSkins);
 
             opt.Scale(XMVector3.Length(SceneConstants.VecEye).X * 1.2f / (opt.Size * OptFile.ScaleFactor));
 

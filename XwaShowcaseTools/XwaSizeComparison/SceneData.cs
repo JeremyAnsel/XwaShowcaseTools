@@ -2,6 +2,7 @@
 using JeremyAnsel.Xwa.Dat;
 using JeremyAnsel.Xwa.HooksConfig;
 using JeremyAnsel.Xwa.Opt;
+using JeremyAnsel.Xwa.OptTransform;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,15 +35,7 @@ namespace XwaSizeComparison
 
             OptFile opt = string.IsNullOrEmpty(sceneOpt.OptFilename) ? new OptFile() : OptFile.FromFile(sceneOpt.OptFilename);
 
-            var objectProfiles = OptModel.GetObjectProfiles(opt.FileName);
-            //var objectSkins = OptModel.GetSkins(opt.FileName);
-
-            if (!objectProfiles.TryGetValue(sceneOpt.OptObjectProfile, out List<int> objectProfile))
-            {
-                objectProfile = objectProfiles["Default"];
-            }
-
-            opt = OptModel.GetTransformedOpt(opt, sceneOpt.OptVersion, objectProfile, sceneOpt.OptObjectSkins);
+            opt = OptTransformModel.GetTransformedOpt(opt, sceneOpt.OptVersion, sceneOpt.OptObjectProfile, sceneOpt.OptObjectSkins);
 
             opt.Scale(OptFile.ScaleFactor);
 

@@ -53,6 +53,7 @@
     <PackageReference Include="JeremyAnsel.Xwa.Dat" Version="3.0.20" />
     <PackageReference Include="JeremyAnsel.Xwa.HooksConfig" Version="1.0.4" />
     <PackageReference Include="JeremyAnsel.Xwa.Opt" Version="3.0.47" />
+    <PackageReference Include="JeremyAnsel.Xwa.OptTransform" Version="1.0.6" />
   </ItemGroup>
 
   <ItemGroup>
