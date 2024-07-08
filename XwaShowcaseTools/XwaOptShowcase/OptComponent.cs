@@ -43,10 +43,11 @@ namespace XwaOptShowcase
         private D3D11SamplerState sampler;
         private D3D11RasterizerState DisableCullingRasterizerState;
         private D3D11RasterizerState EnableCullingRasterizerState;
-        private D3D11RasterizerState rasterizerStateWireframe;
+        private D3D11RasterizerState RasterizerStateWireframe;
         private D3D11DepthStencilState EnableDepthDepthStencilState;
         private D3D11DepthStencilState DisableDepthWriteDepthStencilState;
         private D3D11DepthStencilState TwoSidedStencilDepthStencilState;
+        private D3D11DepthStencilState DepthMainStencilDepthStencilState;
         private D3D11DepthStencilState RenderNonShadowsDepthStencilState;
         private D3D11DepthStencilState RenderInShadowsDepthStencilState;
         private D3D11BlendState DefaultBlendState;
@@ -169,7 +170,7 @@ namespace XwaOptShowcase
                 CullMode = D3D11CullMode.Back
             });
 
-            this.rasterizerStateWireframe = device.CreateRasterizerState(D3D11RasterizerDesc.Default with
+            this.RasterizerStateWireframe = device.CreateRasterizerState(D3D11RasterizerDesc.Default with
             {
                 CullMode = D3D11CullMode.None,
                 FillMode = D3D11FillMode.WireFrame
@@ -189,7 +190,7 @@ namespace XwaOptShowcase
             this.TwoSidedStencilDepthStencilState = device.CreateDepthStencilState(new D3D11DepthStencilDesc(
                 true,
                 D3D11DepthWriteMask.Zero,
-                D3D11ComparisonFunction.Less,
+                D3D11ComparisonFunction.Greater,
                 true,
                 0xff,
                 0xff,
@@ -200,6 +201,22 @@ namespace XwaOptShowcase
                 D3D11StencilOperation.Keep,
                 D3D11StencilOperation.Increment,
                 D3D11StencilOperation.Keep,
+                D3D11ComparisonFunction.Always));
+
+            this.DepthMainStencilDepthStencilState = device.CreateDepthStencilState(new D3D11DepthStencilDesc(
+                true,
+                D3D11DepthWriteMask.Zero,
+                D3D11ComparisonFunction.Equal,
+                true,
+                0xff,
+                0xff,
+                D3D11StencilOperation.Keep,
+                D3D11StencilOperation.Keep,
+                D3D11StencilOperation.Replace,
+                D3D11ComparisonFunction.Always,
+                D3D11StencilOperation.Keep,
+                D3D11StencilOperation.Keep,
+                D3D11StencilOperation.Replace,
                 D3D11ComparisonFunction.Always));
 
             this.RenderNonShadowsDepthStencilState = device.CreateDepthStencilState(new D3D11DepthStencilDesc(
@@ -629,10 +646,11 @@ namespace XwaOptShowcase
             D3D11Utils.DisposeAndNull(ref this.sampler);
             D3D11Utils.DisposeAndNull(ref this.DisableCullingRasterizerState);
             D3D11Utils.DisposeAndNull(ref this.EnableCullingRasterizerState);
-            D3D11Utils.DisposeAndNull(ref this.rasterizerStateWireframe);
+            D3D11Utils.DisposeAndNull(ref this.RasterizerStateWireframe);
             D3D11Utils.DisposeAndNull(ref this.EnableDepthDepthStencilState);
             D3D11Utils.DisposeAndNull(ref this.DisableDepthWriteDepthStencilState);
             D3D11Utils.DisposeAndNull(ref this.TwoSidedStencilDepthStencilState);
+            D3D11Utils.DisposeAndNull(ref this.DepthMainStencilDepthStencilState);
             D3D11Utils.DisposeAndNull(ref this.RenderNonShadowsDepthStencilState);
             D3D11Utils.DisposeAndNull(ref this.RenderInShadowsDepthStencilState);
             D3D11Utils.DisposeAndNull(ref this.DefaultBlendState);
@@ -744,7 +762,7 @@ namespace XwaOptShowcase
                     this.DefaultBlendState,
                     this.EnableDepthDepthStencilState,
                     0,
-                    this.rasterizerStateWireframe);
+                    this.RasterizerStateWireframe);
 
                 this.RenderSceneTransparent(
                     this.shaderVSMain,
@@ -753,7 +771,7 @@ namespace XwaOptShowcase
                     this.AlphaBlendingBlendState,
                     this.DisableDepthWriteDepthStencilState,
                     0,
-                    this.rasterizerStateWireframe);
+                    this.RasterizerStateWireframe);
 
                 return;
             }
@@ -766,7 +784,7 @@ namespace XwaOptShowcase
             this.RenderSceneSolid(
                 this.shaderVSMain,
                 null,
-                null, //this.shaderPSDepth,
+                null,
                 this.NoBlendingBlendState,
                 this.EnableDepthDepthStencilState,
                 0,
@@ -797,6 +815,15 @@ namespace XwaOptShowcase
                     1,
                     this.DisableCullingRasterizerState);
             }
+
+            this.RenderSceneSolid(
+                this.shaderVSMain,
+                null,
+                this.shaderPSDepth,
+                this.DisableFrameBufferBlendState,
+                this.DepthMainStencilDepthStencilState,
+                1,
+                this.DisableCullingRasterizerState);
 
             // Render the lit scene
             this.RenderSceneSolid(

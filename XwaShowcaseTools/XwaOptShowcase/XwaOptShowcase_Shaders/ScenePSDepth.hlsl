@@ -12,9 +12,14 @@ float4 main(PSSceneIn input) : SV_TARGET
     //    discard;
     //}
 
-    if (isWireframe)
+    //if (isWireframe)
+    //{
+    //    return float4(0.0f, 0.0f, 1.0f, 1.0f);
+    //}
+    
+    if (dot(normalize(input.norm), lightDirection.xyz) > 0.0f)
     {
-        return float4(0.0f, 0.0f, 1.0f, 1.0f);
+        discard;
     }
     
     return float4(0.0f, 0.0f, 1.0f, 1.0f);

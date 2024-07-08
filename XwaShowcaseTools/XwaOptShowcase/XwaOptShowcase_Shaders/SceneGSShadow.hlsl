@@ -33,7 +33,7 @@ void main(triangle GSShadowIn In[3], inout TriangleStream<PSShadowIn> ShadowTria
 {
     float3 N = normalize(cross(In[1].pos - In[0].pos, In[2].pos - In[0].pos));
 
-    if (dot(N, lightDirection.xyz) > 0.0f)
+    if (dot(N, lightDirection.xyz) < 0.0f)
     {
         DetectAndProcessSilhouette(In[0], In[1], lightDirection.xyz, ShadowTriangleStream);
         DetectAndProcessSilhouette(In[1], In[2], lightDirection.xyz, ShadowTriangleStream);
