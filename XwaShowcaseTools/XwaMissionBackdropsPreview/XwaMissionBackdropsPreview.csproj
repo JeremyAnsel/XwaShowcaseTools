@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Version>1.0.0</Version>
+    <Company>Jérémy Ansel</Company>
+    <Copyright>Copyright © 2024 Jérémy Ansel</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <HLSLShader Include="XwaMissionBackdropsPreview_Shaders\PixelShader.hlsl">
+      <ShaderProfile>ps_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="XwaMissionBackdropsPreview_Shaders\VertexShader.hlsl">
+      <ShaderProfile>vs_4_0</ShaderProfile>
+    </HLSLShader>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JeremyAnsel.DirectX.DXMath" Version="3.0.32" />
+    <PackageReference Include="JeremyAnsel.DirectX.GameWindow" Version="3.0.49" />
+    <PackageReference Include="JeremyAnsel.DirectX.SdkCamera" Version="2.0.12" />
+    <PackageReference Include="JeremyAnsel.HLSL.Targets" Version="2.0.25" />
+    <PackageReference Include="JeremyAnsel.Xwa.Dat" Version="3.0.25" />
+    <PackageReference Include="JeremyAnsel.Xwa.HooksConfig" Version="1.0.8" />
+    <PackageReference Include="JeremyAnsel.Xwa.Workspace" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="JeremyAnsel.Xwa.Mission">
+      <HintPath>..\Components\JeremyAnsel.Xwa.Mission.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

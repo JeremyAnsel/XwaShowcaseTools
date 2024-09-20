@@ -1,4 +1,6 @@
 
+# XwaOptShowcase
+
 XwaOptShowcase runs on Windows 32/64 bits with the .NET framework 6.0.
 
 When the tool starts you will be asked to select an OPT file.
@@ -24,6 +26,8 @@ Num 5: Front
 Num 6: Right
 Num 8: Top
 
+# XwaSizeComparison
+
 XwaSizeComparison runs on Windows 32/64 bits with the .NET framework 6.0.
 Before launching the tool you have to edit the Scene.txt file. Modify the OptDirectory setting and enter the path to the FlightModels directory of your XWAU install.
 
@@ -36,4 +40,25 @@ To restart, press F9.
 To switch to fullscreen, press F11.
 To hide the time, press F12.
 To exit the tool, you can press the Q key.
+
+# XwaMissionBackdropsPreview
+
+XwaMissionBackdropsPreview runs on Windows 32/64 bits with the .NET framework 6.0.
+
+When the tool starts you will be asked to select a TIE file.
+To open another TIE, press O.
+To restart, press F9.
+To switch to fullscreen, press F11.
+To hide the time, press F12.
+To exit the tool, you can press the Q key.
+To change the view:
+mouse left
+Num 2: Bottom
+Num 3: Rear
+Num 4: Left
+Num 5: Front
+Num 6: Right
+Num 8: Top
+To zoom, use mouse wheel
+To change the region, press "+" or "-".
 
