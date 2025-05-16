@@ -2,7 +2,9 @@
 
 public sealed class BackdropEntry
 {
-    public ushort ModelIndex { get; set; }
+    public short DataIndex1 { get; set; }
+
+    public short DataIndex2 { get; set; }
 
     public int WorldX { get; set; }
 

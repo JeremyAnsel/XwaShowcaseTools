@@ -60,22 +60,12 @@ internal sealed class MissionModel
             lines.Add(line);
         }
 
-        var planetGroupIds = AppSettings
-            .ExePlanets
-            .Select(t => t.DataIndex1)
-            .ToList();
-
         foreach (string line in lines)
         {
             DatFile dat = DatFile.FromFile(AppSettings.WorkingDirectory + line, false);
 
             foreach (DatImage image in dat.Images)
             {
-                if (!planetGroupIds.Contains(image.GroupId))
-                {
-                    continue;
-                }
-
                 (int, int) key = (image.GroupId, image.ImageId);
 
                 if (BackdropModels.ContainsKey(key))
@@ -208,23 +198,39 @@ internal sealed class MissionModel
                 continue;
             }
 
-            if (planetId < 0 || planetId >= AppSettings.ExePlanets.Length)
+            bool isDefaultPlanet = planetId >= 1 && planetId < AppSettings.ExePlanets.Length;
+            bool isExtraPlanet = planetId >= 104 && planetId <= 255;
+
+            if (!isDefaultPlanet && !isExtraPlanet)
             {
                 continue;
             }
 
-            var planet = AppSettings.ExePlanets[planetId];
+            bool isDsFire = isDefaultPlanet && AppSettings.ExePlanets[planetId].ModelIndex == 487;
 
-            if (planet.ModelIndex == 0)
+            var planet = isDefaultPlanet
+                ? AppSettings.ExePlanets[planetId]
+                : new()
+                {
+                    ModelIndex = 0,
+                    DataIndex1 = (short)(6304 + planetId - 104),
+                    DataIndex2 = 0,
+                    Flags = 5
+                };
+
+            if (isDefaultPlanet)
             {
-                continue;
-            }
+                if (planet.ModelIndex == 0)
+                {
+                    continue;
+                }
 
-            var objectEntry = AppSettings.WorkingSpace.ObjectTable.Entries[planet.ModelIndex];
+                var planetObject = AppSettings.WorkingSpace.ObjectTable.Entries[planet.ModelIndex];
 
-            if (!objectEntry.GameOptions.HasFlag(XwaExeObjectGameOptions.IsBackdrop))
-            {
-                continue;
+                if (!planetObject.GameOptions.HasFlag(XwaExeObjectGameOptions.IsBackdrop))
+                {
+                    continue;
+                }
             }
 
             if (BackdropsCountPerRegion[startRegion] >= 32)
@@ -239,7 +245,8 @@ internal sealed class MissionModel
             var backdrop = new BackdropEntry();
             BackdropsEntries[backdropIndex] = backdrop;
 
-            backdrop.ModelIndex = planet.ModelIndex;
+            backdrop.DataIndex1 = planet.DataIndex1;
+            backdrop.DataIndex2 = planet.DataIndex2;
             backdrop.WorldX = positionX;
             backdrop.WorldY = positionY;
             backdrop.WorldZ = positionZ;
@@ -303,7 +310,7 @@ internal sealed class MissionModel
             float colorG = 0.0f;
             float colorB = 0.0f;
 
-            if (planet.ModelIndex == 487)
+            if (isDsFire)
             {
                 // ModelIndex_487_6250_0_ResData_DsFire
                 backdrop.ImageNumber = 1;
@@ -340,20 +347,20 @@ internal sealed class MissionModel
             int imageNumber;
             if (backdrop.Side <= 3)
             {
-                imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : objectEntry.DataIndex2;
+                imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : planet.DataIndex2;
             }
             else
             {
                 imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : 0;
             }
 
-            backdrop.Scale = size * GetBackdropScale(objectEntry.DataIndex1, imageNumber);
+            backdrop.Scale = size * GetBackdropScale(planet.DataIndex1, imageNumber);
             backdrop.ColorIntensity = colorI;
             backdrop.ColorR = colorR;
             backdrop.ColorG = colorG;
             backdrop.ColorB = colorB;
 
-            if (planet.ModelIndex == 487)
+            if (isDsFire)
             {
                 // ModelIndex_487_6250_0_ResData_DsFire
                 BackdropsCountPerRegion[startRegion]++;
@@ -379,19 +386,18 @@ internal sealed class MissionModel
 
             bool isWrap = (backdrop.Flags & 0x02) != 0 || backdrop.Side <= 3;
 
-            var planetObject = AppSettings.WorkingSpace.ObjectTable.Entries[backdrop.ModelIndex];
             int imageNumber;
 
             if (isWrap)
             {
-                imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : planetObject.DataIndex2;
+                imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : backdrop.DataIndex2;
             }
             else
             {
                 imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : 0;
             }
 
-            (int, int) planetImageKey = (planetObject.DataIndex1, imageNumber);
+            (int, int) planetImageKey = (backdrop.DataIndex1, imageNumber);
 
             if (!BackdropModels.TryGetValue(planetImageKey, out string planetFileName))
             {
