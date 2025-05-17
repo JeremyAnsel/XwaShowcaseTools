@@ -354,6 +354,8 @@ internal sealed class MissionModel
                 imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : 0;
             }
 
+            imageNumber = Math.Max(imageNumber, 0);
+
             backdrop.Scale = size * GetBackdropScale(planet.DataIndex1, imageNumber);
             backdrop.ColorIntensity = colorI;
             backdrop.ColorR = colorR;
@@ -396,6 +398,8 @@ internal sealed class MissionModel
             {
                 imageNumber = (backdrop.Flags & 0x01) != 0 ? backdrop.ImageNumber - 1 : 0;
             }
+
+            imageNumber = Math.Max(imageNumber, 0);
 
             (int, int) planetImageKey = (backdrop.DataIndex1, imageNumber);
 
