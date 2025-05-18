@@ -10,6 +10,7 @@
     <Version>1.0.0</Version>
     <Company>Jérémy Ansel</Company>
     <Copyright>Copyright © 2023 Jérémy Ansel</Copyright>
+    <ApplicationIcon>XwaSizeComparison.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
