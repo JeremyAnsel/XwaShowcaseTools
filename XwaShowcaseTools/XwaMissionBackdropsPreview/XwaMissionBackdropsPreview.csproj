@@ -14,6 +14,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <HLSLShader Include="XwaMissionBackdropsPreview_Shaders\CubeMapsPixelShader.hlsl">
+      <ShaderProfile>ps_4_0</ShaderProfile>
+    </HLSLShader>
+    <HLSLShader Include="XwaMissionBackdropsPreview_Shaders\CubeMapsVertexShader.hlsl">
+      <ShaderProfile>vs_4_0</ShaderProfile>
+    </HLSLShader>
     <HLSLShader Include="XwaMissionBackdropsPreview_Shaders\PixelShader.hlsl">
       <ShaderProfile>ps_4_0</ShaderProfile>
     </HLSLShader>

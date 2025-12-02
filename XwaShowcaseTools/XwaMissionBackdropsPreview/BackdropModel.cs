@@ -26,6 +26,10 @@ internal sealed class BackdropModel
 
     public bool isWrap;
 
+    public short groupId;
+
+    public short imageId;
+
     public BackdropModel(DeviceResources resources, DatImage planetImage, BackdropEntry backdrop, bool isWrap)
     {
         this.deviceResources = resources;
@@ -58,6 +62,9 @@ internal sealed class BackdropModel
 
         byte[] imageData = planetImage.GetImageData();
         loader.LoadTexture(imageData, (uint)planetImage.Width, (uint)planetImage.Height, out this.texture, out this.textureView);
+
+        this.groupId = planetImage.GroupId;
+        this.imageId = planetImage.ImageId;
     }
 
     public void Release()

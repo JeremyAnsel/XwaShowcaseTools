@@ -43,6 +43,8 @@ internal class MainGameComponent : IGameComponent
 
     private MissionModel missionModel;
 
+    private CubeMaps cubeMaps;
+
     public MainGameComponent(string workingDirectory, string missionFileName, int missionRegion)
     {
         WorkingDirectory = workingDirectory;
@@ -129,6 +131,8 @@ internal class MainGameComponent : IGameComponent
             //FillMode = D3D11FillMode.WireFrame
         });
 
+        this.cubeMaps = new();
+        this.cubeMaps.LoadMissionCubeMaps(this.deviceResources, MissionFileName);
         this.missionModel = new MissionModel(MissionFileName, MissionRegion, CreateRenderBackdrops, CreateBackdrop);
 
         this.ViewMatrix = XMMatrix.LookAtLH(SceneConstants.VecEye, SceneConstants.VecAt, SceneConstants.VecUp);
@@ -137,6 +141,9 @@ internal class MainGameComponent : IGameComponent
 
     public void ReleaseDeviceDependentResources()
     {
+        this.cubeMaps?.Release();
+        this.cubeMaps = null;
+
         this.missionModel = null;
 
         foreach (var backdrop in this.backdrops)
@@ -160,6 +167,11 @@ internal class MainGameComponent : IGameComponent
 
     private void CreateBackdrop(DatImage planetImage, BackdropEntry backdrop, bool isWrap)
     {
+        if (this.cubeMaps is not null && this.cubeMaps.CubeMapsSkipBackdrop(planetImage.GroupId, planetImage.ImageId))
+        {
+            return;
+        }
+
         var model = new BackdropModel(this.deviceResources, planetImage, backdrop, isWrap);
         this.backdrops.Add(model);
     }
@@ -189,6 +201,10 @@ internal class MainGameComponent : IGameComponent
         context.ClearRenderTargetView(this.deviceResources.D3DRenderTargetView, XMKnownColor.Black);
         context.ClearDepthStencilView(this.deviceResources.D3DDepthStencilView, D3D11ClearOptions.Depth, 1.0f, 0);
 
+        XMMatrix scaling = XMMatrix.Scaling(SceneConstants.WorldScale, SceneConstants.WorldScale, SceneConstants.WorldScale);
+
+        this.cubeMaps?.RenderDefaultBackground(this.deviceResources, MissionRegion, this.WorldMatrix, this.ViewMatrix, this.ProjectionMatrix);
+
         context.InputAssemblerSetInputLayout(this.inputLayout);
         context.RasterizerStageSetState(this.rasterizerStateWireframe);
 
@@ -197,6 +213,11 @@ internal class MainGameComponent : IGameComponent
 
         foreach (var backdrop in this.backdrops)
         {
+            //if (this.cubeMaps is not null && this.cubeMaps.CubeMapsSkipBackdrop(backdrop.groupId, backdrop.imageId))
+            //{
+            //    continue;
+            //}
+
             if (backdrop.vertexBuffer is null)
             {
                 continue;
@@ -204,8 +225,7 @@ internal class MainGameComponent : IGameComponent
 
             this.constantBufferData.World = (
                 backdrop.GetTransformMatrix()
-                * this.WorldMatrix
-                * XMMatrix.Scaling(SceneConstants.WorldScale, SceneConstants.WorldScale, SceneConstants.WorldScale)
+                * this.WorldMatrix * scaling
                 ).Transpose();
 
             this.deviceResources.D3DContext.UpdateSubresource(this.constantBuffer, 0, null, this.constantBufferData, 0, 0);

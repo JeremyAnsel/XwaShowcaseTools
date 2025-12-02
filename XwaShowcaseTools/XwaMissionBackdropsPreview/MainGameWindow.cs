@@ -11,7 +11,7 @@ internal class MainGameWindow : GameWindowBase
 {
     private MainGameComponent mainGameComponent;
 
-    private SdkModelViewerCamera camera;
+    private CustomCamera camera;
 
     private string workingDirectory;
 
@@ -34,7 +34,7 @@ internal class MainGameWindow : GameWindowBase
     {
         this.mainGameComponent = this.CheckMinimalFeatureLevel(new MainGameComponent(null, null, -1));
 
-        this.camera = new SdkModelViewerCamera();
+        this.camera = new CustomCamera();
 
         this.SelectTieFileName();
 
@@ -44,9 +44,7 @@ internal class MainGameWindow : GameWindowBase
     private void ResetCamera()
     {
         this.camera.Reset();
-        this.camera.SetWorldMatrix(XMMatrix.Identity);
         this.camera.SetViewParams(SceneConstants.VecEye, SceneConstants.VecAt);
-        this.camera.SetRadius(SceneConstants.CameraDefaultRadius, SceneConstants.CameraMinRadius, SceneConstants.CameraMaxRadius);
     }
 
     protected override void CreateDeviceDependentResources()
@@ -73,8 +71,7 @@ internal class MainGameWindow : GameWindowBase
 
         float fAspectRatio = (float)this.DeviceResources.BackBufferWidth / this.DeviceResources.BackBufferHeight;
         this.camera.SetProjParams(XMMath.PIDivFour, fAspectRatio, SceneConstants.ProjectionNearPlane, SceneConstants.ProjectionFarPlane);
-        this.camera.SetWindow((int)this.DeviceResources.BackBufferWidth, (int)this.DeviceResources.BackBufferHeight);
-        this.camera.SetButtonMasks(SdkCameraMouseKeys.LeftButton, SdkCameraMouseKeys.Wheel, 0);
+        this.camera.SetWindow((int)this.DeviceResources.BackBufferWidth, (int)this.DeviceResources.BackBufferHeight, 0.9f);
     }
 
     protected override void ReleaseWindowSizeDependentResources()
@@ -93,6 +90,11 @@ internal class MainGameWindow : GameWindowBase
             || this.missionFileName != this.mainGameComponent.MissionFileName
             || this.missionRegion != this.mainGameComponent.MissionRegion)
         {
+            bool resetCamera =
+                this.forceUpdate
+                || this.workingDirectory != this.mainGameComponent.WorkingDirectory
+                || this.missionFileName != this.mainGameComponent.MissionFileName;
+
             this.forceUpdate = false;
 
             this.mainGameComponent.ReleaseWindowSizeDependentResources();
@@ -103,18 +105,19 @@ internal class MainGameWindow : GameWindowBase
             this.mainGameComponent.CreateDeviceDependentResources(this.DeviceResources);
             this.mainGameComponent.CreateWindowSizeDependentResources();
 
-            this.ResetCamera();
+            if (resetCamera)
+            {
+                this.ResetCamera();
+            }
         }
 
         this.mainGameComponent.Update(this.Timer);
-
-        this.camera.FrameMove(this.Timer.ElapsedSeconds);
     }
 
     protected override void Render()
     {
-        this.mainGameComponent.WorldMatrix = this.camera.GetWorldMatrix();
-        this.mainGameComponent.ViewMatrix = this.camera.GetViewMatrix();
+        this.mainGameComponent.WorldMatrix = XMMatrix.Identity;
+        this.mainGameComponent.ViewMatrix = this.camera.GetTransformMatrix();
         this.mainGameComponent.ProjectionMatrix = this.camera.GetProjMatrix();
 
         this.mainGameComponent.Render();
@@ -155,37 +158,37 @@ internal class MainGameWindow : GameWindowBase
                 case VirtualKey.NumPad2:
                     // Bottom
                     this.ResetCamera();
-                    this.camera.SetWorldQuat(XMQuaternion.RotationRollPitchYaw(-XMMath.PIDivTwo, 0, 0));
+                    this.camera.SetQuat(XMQuaternion.RotationRollPitchYaw(-XMMath.PIDivTwo, 0, 0));
                     break;
 
                 case VirtualKey.NumPad3:
                     // Rear
                     this.ResetCamera();
-                    this.camera.SetWorldQuat(XMQuaternion.RotationRollPitchYaw(0, XMMath.PI, 0));
+                    this.camera.SetQuat(XMQuaternion.RotationRollPitchYaw(0, XMMath.PI, 0));
                     break;
 
                 case VirtualKey.NumPad4:
                     // Left
                     this.ResetCamera();
-                    this.camera.SetWorldQuat(XMQuaternion.RotationRollPitchYaw(0, XMMath.PIDivTwo, 0));
+                    this.camera.SetQuat(XMQuaternion.RotationRollPitchYaw(0, XMMath.PIDivTwo, 0));
                     break;
 
                 case VirtualKey.NumPad5:
                     // Front
                     this.ResetCamera();
-                    this.camera.SetWorldQuat(XMQuaternion.RotationRollPitchYaw(0, 0, 0));
+                    this.camera.SetQuat(XMQuaternion.RotationRollPitchYaw(0, 0, 0));
                     break;
 
                 case VirtualKey.NumPad6:
                     // Right
                     this.ResetCamera();
-                    this.camera.SetWorldQuat(XMQuaternion.RotationRollPitchYaw(0, -XMMath.PIDivTwo, 0));
+                    this.camera.SetQuat(XMQuaternion.RotationRollPitchYaw(0, -XMMath.PIDivTwo, 0));
                     break;
 
                 case VirtualKey.NumPad8:
                     // Top
                     this.ResetCamera();
-                    this.camera.SetWorldQuat(XMQuaternion.RotationRollPitchYaw(XMMath.PIDivTwo, 0, 0));
+                    this.camera.SetQuat(XMQuaternion.RotationRollPitchYaw(XMMath.PIDivTwo, 0, 0));
                     break;
 
                 case VirtualKey.O:
