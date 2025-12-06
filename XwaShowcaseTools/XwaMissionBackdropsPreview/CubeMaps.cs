@@ -401,12 +401,12 @@ internal class CubeMaps
             ovrAngZ = g_CubeMaps.regionOvrAngZ[region];
         }
 
-        XMMatrix Rx = XMMatrix.RotationX(XMMath.ConvertToRadians(angX));
-        XMMatrix Ry = XMMatrix.RotationY(XMMath.ConvertToRadians(angZ));
-        XMMatrix Rz = XMMatrix.RotationZ(XMMath.ConvertToRadians(angY));
-        XMMatrix ovrRx = XMMatrix.RotationX(XMMath.ConvertToRadians(ovrAngX));
-        XMMatrix ovrRy = XMMatrix.RotationY(XMMath.ConvertToRadians(ovrAngZ));
-        XMMatrix ovrRz = XMMatrix.RotationZ(XMMath.ConvertToRadians(ovrAngY));
+        XMMatrix Rx = XMMatrix.RotationX(XMMath.ConvertToRadians(-angX));
+        XMMatrix Ry = XMMatrix.RotationY(XMMath.ConvertToRadians(-angY));
+        XMMatrix Rz = XMMatrix.RotationZ(XMMath.ConvertToRadians(-angZ));
+        XMMatrix ovrRx = XMMatrix.RotationX(XMMath.ConvertToRadians(-ovrAngX));
+        XMMatrix ovrRy = XMMatrix.RotationY(XMMath.ConvertToRadians(-ovrAngY));
+        XMMatrix ovrRz = XMMatrix.RotationZ(XMMath.ConvertToRadians(-ovrAngZ));
         XMMatrix mapRot = Rz * Ry * Rx;
         XMMatrix ovrMapRot = ovrRx * ovrRy * ovrRz;
 
